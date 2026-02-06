@@ -1,0 +1,1 @@
+此knowledge base是yceachan 面向Agent ，探索Linux内核机制与驱动开发过程中的札记产出。0基础的入门过程札记已归档到`Legacy`

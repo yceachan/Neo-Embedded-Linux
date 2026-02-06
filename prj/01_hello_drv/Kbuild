@@ -1,0 +1,9 @@
+# Kbuild for Multi-file Driver
+
+obj-m += hello_drv.o
+
+# hello_drv.ko 由以下两个对象链接而成
+hello_drv-y := src/driver_main.o src/driver_fops.o
+
+# 添加头文件路径
+ccflags-y += -I$(src)/include
