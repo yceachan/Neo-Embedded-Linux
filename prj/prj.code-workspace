@@ -7,5 +7,12 @@
 			"path": "../sdk/100ask_imx6ull-sdk/Linux-4.9.88"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"terminal.integrated.env.linux": {
+			"KERN_DIR": "/home/pi/imx/sdk/100ask_imx6ull-sdk/Linux-4.9.88",
+			"ARCH": "arm",
+			"CROSS_COMPILE": "arm-buildroot-linux-gnueabihf-",
+			"PATH": "${env:PATH}:/home/pi/imx/sdk/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin"
+		}
+	}
 }
