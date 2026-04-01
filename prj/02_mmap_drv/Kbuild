@@ -1,0 +1,7 @@
+# Kbuild for mmap_drv
+
+obj-m += mmap_drv.o
+
+mmap_drv-y := src/driver_main.o src/driver_fops.o
+
+ccflags-y += -I$(src)/include
