@@ -80,8 +80,8 @@ graph TD
 
 | 目录 | 全称 | 核心隐喻 | 职责与地位 | 在本驱动中的体现 |
 | :--- | :--- | :--- | :--- | :--- |
-| **/dev** | Device FS | **操作台** | **访问入口**。提供对硬件的 I/O 接口。用户必须通过它才能 read/write 硬件。通常由 `devtmpfs` 管理。 | `insmod` 后由 `mdev` 自动生成 `/dev/hello_drv`。这是用户读写数据的唯一通道。 |
-| **/sys** | Sysfs | **说明书** | **结构视图**。展示设备间的拓扑关系、属性和分类。它是内核数据结构 (`kobject`) 的直接映射。 | `/sys/class/hello_class/hello_drv/`。包含 `dev`(设备号)、`uevent` 等元数据。 |
+| **/dev** | Device FS | **操作台** | **IO接口**。提供对硬件的 I/O 接口。用户必须通过它才能 read/write 硬件。通常由 `devtmpfs` 管理。 | `insmod` 后由 `mdev` 自动生成 `/dev/hello_drv`。这是用户读写数据的唯一通道。 |
+| **/sys** | Sysfs | **说明书** | **属性配置**。展示设备间的拓扑关系、属性和分类。它是内核数据结构 (`kobject`) 的直接映射。 | `/sys/class/hello_class/hello_drv/`。包含 `dev`(设备号)、`uevent` 等元数据。 |
 | **/proc** | Process FS | **仪表盘** | **运行状态**。展示系统运行时的统计信息（内存、中断、进程）。驱动通常只在此做简略登记。 | `/proc/devices` 文件中记录了一行 `245 hello_drv`，表明该主设备号已被占用。 |
 
 ### 3.1 实例微观解剖
