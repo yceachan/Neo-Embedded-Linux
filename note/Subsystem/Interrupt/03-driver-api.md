@@ -96,64 +96,22 @@ static irqreturn_t my_device_isr(int irq, void *dev_id)
 
 ## 4. 线程化中断 — request_threaded_irq()
 
-**问题：** ISR 运行在关中断的硬件上下文，不能调用任何可能睡眠的函数（`kmalloc`, `mutex_lock` 等）。
-
-**解决：** 将中断处理分为两半：
-- **上半部（hardirq）**：快速执行，只做最必要操作，唤醒下半部
-- **下半部（thread_fn）**：在独立内核线程中执行，可以睡眠
+> 线程化中断的完整内核实现机制（irq_thread 主循环、IRQF_ONESHOT 原理、handler=NULL 快捷方式）已移至：
+> → [`note/kernel/BottomHalf/04-threaded-irq.md`](../../../note/kernel/BottomHalf/04-threaded-irq.md)
 
 ```c
-int request_threaded_irq(unsigned int   irq,
-                         irq_handler_t  handler,     /* 上半部（hardirq context）*/
-                         irq_handler_t  thread_fn,   /* 下半部（内核线程 context）*/
-                         unsigned long  flags,
-                         const char     *name,
-                         void           *dev_id);
+/* API 速记 */
+int request_threaded_irq(unsigned int irq,
+                         irq_handler_t handler,    /* 上半部，可为 NULL */
+                         irq_handler_t thread_fn,  /* 下半部（irq/N 线程）*/
+                         unsigned long flags,       /* 必须含 IRQF_ONESHOT */
+                         const char *name, void *dev_id);
+
+/* 最简写法：省略上半部，全部逻辑在线程中 */
+devm_request_threaded_irq(dev, irq, NULL, my_thread_fn,
+                          IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+                          "my-sensor", priv);
 ```
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant HW as "硬件中断"
-    participant HARD as "上半部 handler\n(关中断，不可睡眠)"
-    participant THREAD as "irq/N 内核线程\n(可睡眠)"
-    participant DRV as "驱动数据处理"
-
-    HW->>HARD: 硬件触发，调用 handler()
-    Note over HARD: 仅做：检查、保存少量状态
-    HARD-->>THREAD: return IRQ_WAKE_THREAD
-    Note over HW: 中断恢复，硬件继续运行
-    THREAD->>DRV: 调用 thread_fn()
-    Note over DRV: 可以 kmalloc、mutex_lock\n读取大量数据、上报事件
-    DRV-->>THREAD: IRQ_HANDLED
-```
-
-### 实用场景
-
-```c
-/* 传感器驱动：上半部记录时间戳，下半部通过 I2C 读取数据 */
-static irqreturn_t sensor_hardirq(int irq, void *dev_id)
-{
-    struct sensor_dev *dev = dev_id;
-    dev->timestamp = ktime_get();   /* 快速记录时间 */
-    return IRQ_WAKE_THREAD;         /* 唤醒线程处理 I2C 读取 */
-}
-
-static irqreturn_t sensor_thread_fn(int irq, void *dev_id)
-{
-    struct sensor_dev *dev = dev_id;
-    /* 可以睡眠：I2C 读取、数据上报 */
-    i2c_master_recv(dev->client, dev->buf, 6);
-    input_report_abs(...);
-    return IRQ_HANDLED;
-}
-
-request_threaded_irq(irq, sensor_hardirq, sensor_thread_fn,
-                     IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-                     "my-sensor", dev);
-```
-
-> `IRQF_ONESHOT`：线程执行期间中断保持 mask 状态，防止上半部在下半部完成前再次触发。对 `request_threaded_irq` **必须**指定此标志（当 handler=NULL 时内核强制添加）。
 
 ---
 

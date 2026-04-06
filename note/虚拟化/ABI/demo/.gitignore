@@ -1,0 +1,12 @@
+# Rust build artifacts
+rust_app/target/
+
+# Package manager lock files (optional, but often ignored in demos)
+rust_app/Cargo.lock
+
+# Compiled C objects if generated outside of target (though build.rs puts them in target)
+**/*.o
+**/*.a
+
+# Release artifacts
+release/

@@ -126,6 +126,10 @@ wake_up_interruptible(&wq);
 | 文件 | 内容 |
 |------|------|
 | [`01-wait-queue.md`](./01-wait-queue.md) | wait_queue 睡眠/唤醒机制，condition 语义，独占唤醒 |
-| [`02-softtimer.md`](./02-softtimer.md) | timer_list 定时器、softirq、tasklet 三级底半部 |
-| [`03-workqueue.md`](./03-workqueue.md) | 工作队列：system WQ、自定义 WQ、delayed work |
+| [`02-softtimer.md`](./02-softtimer.md) | timer_list 内核定时器、jiffies 换算、防抖模板 |
+| [`04-sync-cheatsheet.md`](./04-sync-cheatsheet.md) | 同步原语上下文约束速查、spinlock 变体选型 |
 | [`../../虚拟化/进程通信IPC/semaphore/04-kernel-sync-primitives.md`](../../虚拟化/进程通信IPC/semaphore/04-kernel-sync-primitives.md) | 同步原语全览：mutex/spinlock/rwsem/completion/seqlock |
+| [`../BottomHalf/00-overview.md`](../BottomHalf/00-overview.md) | 中断下半部四种机制全景（softirq/tasklet/workqueue/threaded-irq）|
+| [`05-context-landscape.md`](./05-context-landscape.md) | Linux 五种执行上下文全景、preempt_count 位域、能力矩阵 |
+| [`06-cortexM-pendsv.md`](./06-cortexM-pendsv.md) | Addt: Cortex-M PendSV/SVC 与 Cortex-A 调度机制对比 |
+| [`07-imx6ull-gpt-jiffies.md`](./07-imx6ull-gpt-jiffies.md) | IMX6ULL GPT 时钟源：硬件→驱动→jiffies 完整链路 |
