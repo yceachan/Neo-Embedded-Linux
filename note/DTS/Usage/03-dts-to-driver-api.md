@@ -1,9 +1,11 @@
 ---
 title: 从 DTS 到 驱动绑定：GPIO 控制器实例化全流程
 tags: [Kernel, DTS, Platform_Device, Driver_Binding, VFS]
+desc: 深入剖析 IMX6ULL 平台上 GPIO 控制器从 DTS 节点转化为内核 platform_device 并与驱动绑定的全流程。
 update: 2026-02-07
 
 ---
+
 
 # 从 DTS 到 驱动绑定：GPIO 控制器实例化全流程
 
@@ -106,16 +108,16 @@ ls -l /sys/class/gpio/
 
 ```mermaid
 graph TD
-    DTS[imx6ull.dtsi] -- dtc编译 --> DTB[System DTB]
-    DTB -- Kernel启动解析 --> OF_Node[struct device_node]
-    OF_Node -- of_platform_populate --> PDev[struct platform_device]
+    DTS["imx6ull.dtsi"] -- dtc编译 --> DTB["System DTB"]
+    DTB -- Kernel启动解析 --> OF_Node["struct device_node"]
+    OF_Node -- of_platform_populate --> PDev["struct platform_device"]
     
-    Code[gpio-mxc.c] -- compile --> Driver[Dram struct platform_driver]
+    Code["gpio-mxc.c"] -- compile --> Driver["Dram struct platform_driver"]
    
-    PDev -- Bus Match (compatible) --> Probe[mxc_gpio_probe]
+    PDev -- Bus Match (compatible) --> Probe["mxc_gpio_probe"]
     Driver -- Bus Match --> Probe
     
-    Probe -- devm_gpiochip_add --> GpioLib[GPIO Subsystem]
+    Probe -- devm_gpiochip_add --> GpioLib["GPIO Subsystem"]
     GpioLib -- register --> Sysfs["/sys/class/gpio"]
     GpioLib -- register --> Cdev["/dev/gpiochipN"]
 ```

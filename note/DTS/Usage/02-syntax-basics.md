@@ -1,8 +1,11 @@
 ---
 title: DTS 语法基础 (Syntax Basics)
 tags: [DTS, Syntax, Reference]
+desc: 介绍设备树的语法基础，包括节点、属性的结构，引用与覆盖，以及头文件包含机制。
 update: 2026-02-07
+
 ---
+
 
 # DTS 语法基础 (Syntax Basics)
 
