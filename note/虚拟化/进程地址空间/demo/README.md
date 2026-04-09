@@ -2,7 +2,7 @@
 title: 进程地址空间观察实验
 tags: [demo, 进程地址空间, procfs, vdso, ASLR, mmap]
 desc: 自种子 C 程序 + 分类型 VMA 分析器，把每个变量回溯到所属段，并量化 vDSO 加速比。
-update: 2026-04-08
+update: 2026-04-09
 ---
 
 
@@ -36,52 +36,52 @@ PID=$!
     --check-wx
 ```
 
-## 3. 实测输出（x86_64, glibc 2.35, Linux 6.6 WSL2）
+## 3. 实测输出（x86_64, glibc 2.39, Linux 6.6 WSL2）
 
 ### 3.1 靶子打印的种子地址
 
 ```
-=== target PID = 523453 ===
-  .text   plant_text     = 0x59ceb19d43b9
-  .text   main           = 0x59ceb19d45bd
-  .rodata g_rodata_str   = 0x59ceb19d5008  ("RODATA-SEED")
-  .rodata g_rodata_int   = 0x59ceb19d5014
-  .data   g_data_init    = 0x59ceb19d7010
-  .data   g_static_init  = 0x59ceb19d7014
-  .bss    g_bss_uninit   = 0x59ceb19d7024
-  heap    malloc(64)     = 0x59cebb9d02a0
-  mmap    mmap(2MiB)     = 0x797052400000
-  stack   l_stack_var    = 0x7ffdb6e233bc
-  stack   l_stack_buf    = 0x7ffdb6e23420
-  libc    &printf        = 0x7970526606f0
+=== target PID = 64049 ===
+  .text   plant_text     = 0x556c9e6723b9
+  .text   main           = 0x556c9e6725bd
+  .rodata g_rodata_str   = 0x556c9e673008  ("RODATA-SEED")
+  .rodata g_rodata_int   = 0x556c9e673014
+  .data   g_data_init    = 0x556c9e675010
+  .data   g_static_init  = 0x556c9e675014
+  .bss    g_bss_uninit   = 0x556c9e675024
+  heap    malloc(64)     = 0x556cc29342a0
+  mmap    mmap(2MiB)     = 0x74df92a00000
+  stack   l_stack_var    = 0x7ffd0045a47c
+  stack   l_stack_buf    = 0x7ffd0045a4e0
+  libc    &printf        = 0x74df92c606f0
 
 [bench] 1000000 rounds:
-  vDSO  clock_gettime    avg =   28.6 ns/call
-  raw   syscall(...)     avg =  463.6 ns/call   (×16.2 slower)
+  vDSO  clock_gettime    avg =   29.2 ns/call
+  raw   syscall(...)     avg =  462.6 ns/call   (×15.9 slower)
 [dump] vDSO -> /tmp/vdso.so  (8192 bytes, magic=7f 45 4c 46 "ELF")
 ```
 
 ### 3.2 分析器：分类后的 VMA 表 + summary
 
 ```
-=== address space of PID 523453 (24 VMAs) ===
+=== address space of PID 64049 (24 VMAs) ===
          start             end    size  perms  class        path
 ------------------------------------------------------------------------------------------
-  59ceb19d3000  59ceb19d4000      4K  r--p  exe-rodata   .../target          ← ELF header
-  59ceb19d4000  59ceb19d5000      4K  r-xp  exe-text     .../target          ← .text
-  59ceb19d5000  59ceb19d6000      4K  r--p  exe-rodata   .../target          ← .rodata
-  59ceb19d6000  59ceb19d7000      4K  r--p  exe-rodata   .../target          ← .data.rel.ro
-  59ceb19d7000  59ceb19d8000      4K  rw-p  exe-data     .../target          ← .data + .bss
-  59cebb9d0000  59cebb9f1000    132K  rw-p  heap         [heap]
-  797052400000  797052600000      2M  rw-p  anon-rw      [anon]              ← mmap(2MiB)
-  797052600000  797052628000    160K  r--p  lib-rodata   .../libc.so.6
-  797052628000  7970527bd000      1M  r-xp  lib-text     .../libc.so.6
-  7970527bd000  797052815000    352K  r--p  lib-rodata   .../libc.so.6
+  7ffd00565000  7ffd00567000      8K  r-xp  vdso         [vdso]
+  7ffd00561000  7ffd00565000     16K  r--p  vvar         [vvar]
+  7ffd0043a000  7ffd0045c000    136K  rw-p  stack        [stack]
   ...
-  7ffdb6e03000  7ffdb6e25000    136K  rw-p  stack        [stack]
-  7ffdb6eda000  7ffdb6ede000     16K  r--p  vvar         [vvar]
-  7ffdb6ede000  7ffdb6ee0000      8K  r-xp  vdso         [vdso]
-
+  74df92dbd000  74df92e15000    352K  r--p  lib-rodata   .../libc.so.6
+  74df92c28000  74df92dbd000      1M  r-xp  lib-text     .../libc.so.6
+  74df92c00000  74df92c28000    160K  r--p  lib-rodata   .../libc.so.6
+  74df92a00000  74df92c00000      2M  rw-p  anon-rw      [anon]              ← mmap(2MiB)
+  556cc2934000  556cc2955000    132K  rw-p  heap         [heap]
+  556c9e675000  556c9e676000      4K  rw-p  exe-data     .../target          ← .data + .bss
+  556c9e674000  556c9e675000      4K  r--p  exe-rodata   .../target          ← .data.rel.ro
+  556c9e673000  556c9e674000      4K  r--p  exe-rodata   .../target          ← .rodata
+  556c9e672000  556c9e673000      4K  r-xp  exe-text     .../target          ← .text
+  556c9e671000  556c9e672000      4K  r--p  exe-rodata   .../target          ← ELF header
+```
 --- summary by class ---
 class          #vmas       total
 anon-rw            4          2M
@@ -102,18 +102,18 @@ TOTAL                         4M
 
 ```
 --- locate addresses ---
-  0x59ceb19d43b9  ->  exe-text     r-xp  +0x3b9   target          ← plant_text
-  0x59ceb19d45bd  ->  exe-text     r-xp  +0x5bd   target          ← main
-  0x59ceb19d5008  ->  exe-rodata   r--p  +0x8     target          ← "RODATA-SEED"
-  0x59ceb19d5014  ->  exe-rodata   r--p  +0x14    target          ← g_rodata_int
-  0x59ceb19d7010  ->  exe-data     rw-p  +0x10    target          ← g_data_init
-  0x59ceb19d7014  ->  exe-data     rw-p  +0x14    target          ← g_static_init
-  0x59ceb19d7024  ->  exe-data     rw-p  +0x24    target          ← g_bss_uninit
-  0x59cebb9d02a0  ->  heap         rw-p  +0x2a0   [heap]          ← malloc(64)
-  0x797052400000  ->  anon-rw      rw-p  +0x0     [anon]          ← mmap(2MiB)
-  0x7ffdb6e233bc  ->  stack        rw-p  +0x203bc [stack]
-  0x7ffdb6e23420  ->  stack        rw-p  +0x20420 [stack]
-  0x7970526606f0  ->  lib-text     r-xp  +0x386f0 libc.so.6       ← &printf
+  0x556c9e6723b9  ->  exe-text     r-xp  +0x3b9   target          ← plant_text
+  0x556c9e6725bd  ->  exe-text     r-xp  +0x5bd   target          ← main
+  0x556c9e673008  ->  exe-rodata   r--p  +0x8     target          ← "RODATA-SEED"
+  0x556c9e673014  ->  exe-rodata   r--p  +0x14    target          ← g_rodata_int
+  0x556c9e675010  ->  exe-data     rw-p  +0x10    target          ← g_data_init
+  0x556c9e675014  ->  exe-data     rw-p  +0x14    target          ← g_static_init
+  0x556c9e675024  ->  exe-data     rw-p  +0x24    target          ← g_bss_uninit
+  0x556cc29342a0  ->  heap         rw-p  +0x2a0   [heap]          ← malloc(64)
+  0x74df92a00000  ->  anon-rw      rw-p  +0x0     [anon]          ← mmap(2MiB)
+  0x7ffd0045a47c  ->  stack        rw-p  +0x2047c [stack]
+  0x7ffd0045a4e0  ->  stack        rw-p  +0x204e0 [stack]
+  0x74df92c606f0  ->  lib-text     r-xp  +0x386f0 libc.so.6       ← &printf
 
 --- W^X check ---
   OK: no VMA is simultaneously writable and executable.
@@ -127,11 +127,12 @@ $ file /tmp/vdso.so
 
 $ objdump -T /tmp/vdso.so | grep __vdso
 0000...07b0 g  DF .text  ...  __vdso_gettimeofday
+0000...0dd0 g  DF .text  ...  __vdso_clock_getres
 0000...0a40 g  DF .text  ...  __vdso_time
 0000...0a70 g  DF .text  ...  __vdso_clock_gettime
-0000...0dd0 g  DF .text  ...  __vdso_clock_getres
 0000...0e40 g  DF .text  ...  __vdso_getcpu
 ```
+
 
 ## 4. 由现象引出的结论
 

@@ -1,0 +1,41 @@
+=== address space of PID 67960 (23 VMAs) ===
+         start             end    size  perms  class        path
+------------------------------------------------------------------------------------------
+  57e0da4e2000  57e0da4e3000      4K  r--p  exe-rodata   .../app_static
+  57e0da4e3000  57e0da4e4000      4K  r-xp  exe-text     .../app_static
+  57e0da4e4000  57e0da4e5000      4K  r--p  exe-rodata   .../app_static
+  57e0da4e5000  57e0da4e6000      4K  r--p  exe-rodata   .../app_static
+  57e0da4e6000  57e0da4e7000      4K  rw-p  exe-data     .../app_static
+  57e0f4bd5000  57e0f4bf6000    132K  rw-p  heap         [heap]
+  748815600000  748815628000    160K  r--p  lib-rodata   .../libc.so.6
+  748815628000  7488157bd000      1M  r-xp  lib-text     .../libc.so.6
+  7488157bd000  748815815000    352K  r--p  lib-rodata   .../libc.so.6
+  748815815000  748815816000      4K  ---p  lib-rodata   .../libc.so.6
+  748815816000  74881581a000     16K  r--p  lib-rodata   .../libc.so.6
+  74881581a000  74881581c000      8K  rw-p  lib-data     .../libc.so.6
+  74881581c000  748815829000     52K  rw-p  anon-rw      [anon]
+  74881599b000  74881599e000     12K  rw-p  anon-rw      [anon]
+  7488159a7000  7488159a9000      8K  rw-p  anon-rw      [anon]
+  7488159a9000  7488159ab000      8K  r--p  lib-rodata   .../ld-linux-x86-64.so.2
+  7488159ab000  7488159d5000    168K  r-xp  lib-text     .../ld-linux-x86-64.so.2
+  7488159d5000  7488159e0000     44K  r--p  lib-rodata   .../ld-linux-x86-64.so.2
+  7488159e1000  7488159e3000      8K  r--p  lib-rodata   .../ld-linux-x86-64.so.2
+  7488159e3000  7488159e5000      8K  rw-p  lib-data     .../ld-linux-x86-64.so.2
+  7ffd92ab8000  7ffd92ada000    136K  rw-p  stack        [stack]
+  7ffd92b70000  7ffd92b74000     16K  r--p  vvar         [vvar]
+  7ffd92b74000  7ffd92b76000      8K  r-xp  vdso         [vdso]
+
+--- summary by class ---
+class          #vmas       total
+lib-text           2          1M
+lib-rodata         7        592K
+stack              1        136K
+heap               1        132K
+anon-rw            3         72K
+lib-data           2         16K
+vvar               1         16K
+exe-rodata         3         12K
+vdso               1          8K
+exe-text           1          4K
+exe-data           1          4K
+TOTAL                         2M

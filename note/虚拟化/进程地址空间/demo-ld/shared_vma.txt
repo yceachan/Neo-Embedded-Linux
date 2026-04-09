@@ -1,0 +1,46 @@
+=== address space of PID 67967 (28 VMAs) ===
+         start             end    size  perms  class        path
+------------------------------------------------------------------------------------------
+  5ade2b6f7000  5ade2b6f8000      4K  r--p  exe-rodata   .../app_shared
+  5ade2b6f8000  5ade2b6f9000      4K  r-xp  exe-text     .../app_shared
+  5ade2b6f9000  5ade2b6fa000      4K  r--p  exe-rodata   .../app_shared
+  5ade2b6fa000  5ade2b6fb000      4K  r--p  exe-rodata   .../app_shared
+  5ade2b6fb000  5ade2b6fc000      4K  rw-p  exe-data     .../app_shared
+  5ade5751c000  5ade5753d000    132K  rw-p  heap         [heap]
+  732482000000  732482028000    160K  r--p  lib-rodata   .../libc.so.6
+  732482028000  7324821bd000      1M  r-xp  lib-text     .../libc.so.6
+  7324821bd000  732482215000    352K  r--p  lib-rodata   .../libc.so.6
+  732482215000  732482216000      4K  ---p  lib-rodata   .../libc.so.6
+  732482216000  73248221a000     16K  r--p  lib-rodata   .../libc.so.6
+  73248221a000  73248221c000      8K  rw-p  lib-data     .../libc.so.6
+  73248221c000  732482229000     52K  rw-p  anon-rw      [anon]
+  732482385000  732482388000     12K  rw-p  anon-rw      [anon]
+  732482391000  732482392000      4K  r--p  lib-rodata   .../libmylib.so
+  732482392000  732482393000      4K  r-xp  lib-text     .../libmylib.so
+  732482393000  732482394000      4K  r--p  lib-rodata   .../libmylib.so
+  732482394000  732482395000      4K  r--p  lib-rodata   .../libmylib.so
+  732482395000  732482396000      4K  rw-p  lib-data     .../libmylib.so
+  732482396000  732482398000      8K  rw-p  anon-rw      [anon]
+  732482398000  73248239a000      8K  r--p  lib-rodata   .../ld-linux-x86-64.so.2
+  73248239a000  7324823c4000    168K  r-xp  lib-text     .../ld-linux-x86-64.so.2
+  7324823c4000  7324823cf000     44K  r--p  lib-rodata   .../ld-linux-x86-64.so.2
+  7324823d0000  7324823d2000      8K  r--p  lib-rodata   .../ld-linux-x86-64.so.2
+  7324823d2000  7324823d4000      8K  rw-p  lib-data     .../ld-linux-x86-64.so.2
+  7fff8eec0000  7fff8eee2000    136K  rw-p  stack        [stack]
+  7fff8ef61000  7fff8ef65000     16K  r--p  vvar         [vvar]
+  7fff8ef65000  7fff8ef67000      8K  r-xp  vdso         [vdso]
+
+--- summary by class ---
+class          #vmas       total
+lib-text           3          1M
+lib-rodata        10        604K
+stack              1        136K
+heap               1        132K
+anon-rw            3         72K
+lib-data           3         20K
+vvar               1         16K
+exe-rodata         3         12K
+vdso               1          8K
+exe-text           1          4K
+exe-data           1          4K
+TOTAL                         2M
