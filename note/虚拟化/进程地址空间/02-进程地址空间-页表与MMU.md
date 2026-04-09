@@ -1,6 +1,7 @@
 ---
 title: 进程地址空间-页表与MMU
 tags: [Linux, Kernel, MMU, PageTable, ARMv7, ARMv8]
+desc: 解析 MMU 与页表如何把进程虚拟地址翻译为物理地址，以及 ARMv7/v8 的页表层级。
 update: 2026-03-25
 
 ---

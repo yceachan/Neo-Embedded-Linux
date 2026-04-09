@@ -2,6 +2,8 @@
 
 本指南详细说明如何在 **Ubuntu 22.04 (Python 3.10+)** 环境下，修复 100ask 官方 BSP 同步脚本的兼容性问题，并完成源码拉取。
 
+> REF: [formatter.py](formatter.py) 
+
 ## 1. 核心问题：`formatter.py not found` 深度解析
 
 在使用 100ask 提供的旧版 `repo` 脚本进行初始化时，最常见的报错并非直接的语法错误，而是诡异的：
@@ -112,4 +114,7 @@ import collections.abc
 # ... if isinstance(obj, collections.abc.Iterable):
 ```
 
-你备份在 `/home/pi/imx/note/sdk/formatter.py` 的版本已经完成了此项修改，它是确保 100ask BSP 在现代 WSL2 (Ubuntu 22.04) 环境下能够运行的灵魂组件。
+你备份在 `/home/pi/imx/note/sdk/formatter.py` 的版本已经完成了此项修改，它是确保 100ask BSP 在现代 WSL2 (Ubuntu 22.04) 环境下能够运行的灵魂组件
+
+
+

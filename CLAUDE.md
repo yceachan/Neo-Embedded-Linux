@@ -15,6 +15,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `prj/` | Out-of-tree kernel driver projects |
 | `sdk/` | 100ask IMX6ULL BSP (Linux-4.9.88, U-Boot, Buildroot, toolchain) |
 
+## Environment
+
+| Task | Command / Path |
+|------|----------------|
+| **Activate SDK** | `source ~/imx/imx-env.sh` |
+| **Link EVB** | `ssh imx` |
+| **NFS Mount** | Local `prj/mount/` is mounted at EVB `/mnt/` |
+
 ## Note Knowledge Map
 
 Learning progression in `note/`:

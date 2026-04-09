@@ -1,6 +1,7 @@
 ---
 title: 虚实之间：MMU 的无感、自动化与软件负担
 tags: [Kernel, MMU, Architecture, TLB, PageTable]
+desc: 从 ISA、OS 到应用三个层级讨论 MMU 的透明度与软件需要承担的隐性成本。
 update: 2026-03-25
 
 ---

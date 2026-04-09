@@ -9,6 +9,9 @@ update: 2026-03-25
 
 # 进程创建的艺术：fork 与写时拷贝 (COW)
 
+> [!note]
+> **Ref:** 内核源码与 demo 实测见 [`note/SysCall/进程API/01-fork-COW优化.md`](../../SysCall/进程API/01-fork-COW优化.md)；本篇聚焦原理与动机。
+
 在 Linux 中，创建进程的代价出奇地低。这得益于一个精妙的设计：**写时拷贝 (Copy-on-Write, COW)**。
 
 ## 1. 传统 fork 的痛点 (Naive Fork)
