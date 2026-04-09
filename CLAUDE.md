@@ -23,6 +23,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | **Link EVB** | `ssh imx` |
 | **NFS Mount** | Local `prj/mount/` is mounted at EVB `/mnt/` |
 
+## Note Naming Convention (workspace rule)
+
+- Notes under `note/**` MUST use `NN-topic.md` format (two-digit serial + short English topic).
+- Chinese title goes in YAML frontmatter `title:`, **not** in the filename.
+- Observation/trace/transcript notes use prefix `trail-` and are NOT part of the serial sequence.
+- See `note/SysCall/IO/plan/refact-20260409.md` for the canonical example of this layout.
+
 ## Note Knowledge Map
 
 Learning progression in `note/`:

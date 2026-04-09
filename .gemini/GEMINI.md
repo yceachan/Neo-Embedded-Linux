@@ -27,3 +27,10 @@ ssh imx
 The local project mount directory is already synchronized with the board's NFS:
 - **Local:** `prj/mount/`
 - **Board:** `/mnt/`
+
+## Note Naming Convention (workspace rule)
+
+- Notes under `note/**` MUST use `NN-topic.md` format (two-digit serial + short English topic).
+- Chinese title goes in YAML frontmatter `title:`, **not** in the filename.
+- Observation/trace/transcript notes use prefix `trail-` and are NOT part of the serial sequence.
+- Canonical example: `note/SysCall/IO/` (see `plan/refact-20260409.md`).
