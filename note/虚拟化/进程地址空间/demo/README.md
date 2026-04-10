@@ -81,7 +81,7 @@ PID=$!
   556c9e673000  556c9e674000      4K  r--p  exe-rodata   .../target          ← .rodata
   556c9e672000  556c9e673000      4K  r-xp  exe-text     .../target          ← .text
   556c9e671000  556c9e672000      4K  r--p  exe-rodata   .../target          ← ELF header
-```
+
 --- summary by class ---
 class          #vmas       total
 anon-rw            4          2M

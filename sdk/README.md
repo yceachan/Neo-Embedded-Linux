@@ -7,6 +7,63 @@
 >
 > - [100ask_imx6ull_linux4.9.88_release.xml](100ask_imx6ull-sdk\.repo\manifests\imx6ull\100ask_imx6ull_linux4.9.88_release.xml) 
 
+#  配置repo
+
+## 下载repo
+
+根据您的办公网络情况，从以下链接获取repo工具。
+
+```
+git clone https://gerrit.googlesource.com/git-repo  (谷歌官方源)
+git clone https://mirrors.tuna.tsinghua.edu.cn/git/git-repo (国内清华源)
+git clone https://gerrit-googlesource.lug.ustc.edu.cn/git-repo (国内中科大源)
+```
+
+## 配置REPO_URL
+
+在到构建和谐社会的前提下，需要修改REPO_URL，可参考以下修改：
+
+vim repo
+
+```
+## REPO_URL = 'https://gerrit-googlesource.proxy.ustclug.org/git-repo'
+REPO_URL = 'https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/'
+```
+
+## 配置好的repo(二选一)
+
+```
+git clone  https://gitee.com/oschina/repo.git
+git clone https://e.coding.net/codebug8/repo.git
+```
+
+
+
+#  获取视频配套各个开发板bsp源码
+
+## 100ask_imx6ull_pro开发板
+
+```
+book@100ask:~$ git clone https://e.coding.net/codebug8/repo.git
+book@100ask:~$ mkdir -p 100ask_imx6ull-sdk && cd 100ask_imx6ull-sdk
+book@100ask:~/100ask_imx6ull-sdk$ ../repo/repo init -u  https://gitee.com/weidongshan/manifests.git -b linux-sdk -m imx6ull/100ask_imx6ull_linux4.9.88_release.xml  --no-repo-verify
+book@100ask:~/100ask_imx6ull-sdk$  ../repo/repo sync -j4
+```
+
+## 100ask_imx6ull_pro开发板linux kernel5.4版本
+
+```
+book@100ask:~$ git clone https://e.coding.net/codebug8/repo.git
+book@100ask:~$ mkdir -p 100ask_imx6ull_pro-sdk && cd 100ask_imx6ull_pro-sdk
+book@100ask:~/100ask_imx6ull_pro-sdk$ ../repo/repo init -u  https://gitee.com/weidongshan/manifests.git -b linux-sdk -m imx6ull/100ask_imx6ull_linux5.4.24_release.xml  --no-repo-verify
+book@100ask:~/100ask_imx6ull_pro-sdk$  ../repo/repo sync -j4
+```
+
+
+
+# Addt-manifests-xml
+
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 

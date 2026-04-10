@@ -29,7 +29,7 @@
 ---
 
 
-## 4.Issure
+## 4.Issue
 > [!hint]
 >  **错误现象**：`make: *** No rule to make target 'arch/ARM/Makefile'. Stop.``
 - **原因**：Linux 内核 Makefile 对 `ARCH` 参数**大小写敏感**。必须使用小写 **`arm`**。
@@ -44,4 +44,4 @@
 - **解决方法**：
   ```bash
      make HOSTCFLAGS="-fcommon"
-   ```
+  ```

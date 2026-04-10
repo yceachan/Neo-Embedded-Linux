@@ -36,7 +36,7 @@
 ### Prerequisites
 
 - **Hardware**: NXP i.MX6ULL EVB( 100ASK_IMX6ULL_PRO).
-- **SDK:**[100ask-support BSP](./sdk/README.md);[BSP同步与py-3.10l适配](./note/sdk/01_100ask-BSP同步与py-3.10l适配.md)
+- **SDK:**[100ask-support BSP](./sdk/README.md);[BSP同步与py-3.10适配](./note/sdk/issue/01-100ask-BSP同步与py-3.10l适配.md)
 - **Host**: Linux (Ubuntu 22.04+) on Windows (WSL2).
 - **Toolchain**: `arm-linux-gnueabihf-` (provided in SDK).
 

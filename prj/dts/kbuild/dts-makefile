@@ -1,0 +1,14 @@
+ifeq ($(CONFIG_OF),y)
+
+dtb-$(CONFIG_SOC_IMX6ULL) += \
+	100ask_imx6ull-14x14.dtb \
+	100ask_imx6ull_mini.dtb \
+	100ask_myir_imx6ull_mini.dtb \
+	
+endif
+
+dtstree		:= $(srctree)/$(src)
+dtb-$(CONFIG_OF_ALL_DTBS) := $(patsubst $(dtstree)/%.dts,%.dtb, $(wildcard $(dtstree)/*.dts))
+
+always		:= $(dtb-y)
+clean-files	:= *.dtb

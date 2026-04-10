@@ -3,4 +3,5 @@
 **/.tmp_versions/*
 **/build
 **/output
-mount/*
+nfs/*
+dts/dtbs/

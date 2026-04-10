@@ -1,110 +1,60 @@
 ---
 title: 100ask BSP 源码同步与 Python 3.10 适配
-tags: [Python, SDK, repo, BSP, issue]
-desc: Ubuntu 22.04 (Python 3.10+) 下 100ask BSP repo 工具因 formatter 模块移除及 collections.Iterable 废弃而崩溃，含完整修复流程与 polyfill。
+tags: [sdk, repo, python, wsl]
+desc: repo sync 在 Python 3.10+ 环境下因 formatter 模块移除而失败的修复记录
 update: 2026-04-11
 
 ---
 
 
-# 100ask BSP 源码同步与 Python 3.10 适配
+# BSP 源码同步 — Python 3.10 适配
 
 > [!note]
-> **Ref:** `note/sdk/issue/formatter.py` — polyfill 备份
+> **Ref:** [sdk/README.md](../../sdk/README.md) — repo 配置与 manifest XML
 
-## Issue
+## 问题
 
-| 项 | 值 |
-|----|----|
-| 环境 | Ubuntu 22.04 / WSL2, Python 3.10+ |
-| 触发 | `repo init` 拉取 100ask BSP manifest |
-| 影响 | BSP 源码无法同步，初始化死锁 |
+100ask BSP 通过 `repo sync` 从 Gitee/Coding 拉取多仓源码（U-Boot、Linux-4.9.88、Buildroot、Toolchain）。
 
-### 复现
+在 **Ubuntu 22.04 / WSL**（Python ≥ 3.10）环境下执行 `repo init` 报错：
 
-```bash
-cd ~/imx/sdk
-repo init -u https://gitee.com/weidongshan/manifests.git \
-    -b linux-sdk \
-    -m imx6ull/100ask_imx6ull_linux4.9.88_release.xml
 ```
-
-### 报错（先后出现）
-
-```text
 error: internal error: formatter.py not found
 ```
 
-```text
-AttributeError: module 'collections' has no attribute 'Iterable'
-```
+**根因：** Python 3.10 移除了标准库 `formatter` 模块（3.4 起废弃），旧版 `repo` 依赖该模块，加载即崩溃。崩溃导致 `.repo/repo/` 目录结构不完整，后续调用找不到内部脚本。
 
-### 原因
+附带问题：旧版 `repo` 源码中 `collections.Iterable` 在 3.10+ 需改为 `collections.abc.Iterable`。
 
-两个 Python 3.10 breaking change 叠加：
+## 修复
 
-1. `formatter` 标准库模块被彻底移除（3.4 deprecated → 3.10 删除）→ 旧版 `repo` import 失败
-2. `collections.Iterable` 移至 `collections.abc.Iterable` → 即使补回 formatter，内部引用也崩溃
-
-100ask 的 `repo` 启动器基于旧版 Google repo，硬依赖这两个已废弃 API。自动下载的 `.repo/repo/` 工具包同样不兼容。
-
-### 修复架构
-
-```mermaid
-graph TD
-    Start["repo init"] -->|自动下载| Broken["损坏的 .repo/repo/"]
-    Broken -->|报错| Err["formatter.py not found"]
-
-    subgraph "手动修复路径"
-        Local["note/sdk/issue/formatter.py"]
-        Repo["sdk/repo/"]
-        DotRepo[".repo/repo/"]
-
-        Local -->|"1. cp"| Repo
-        Repo -->|"2. cp -r"| DotRepo
-        DotRepo -->|"3. repo init --no-repo-verify"| OK["repo sync 成功"]
-    end
-
-    style Local fill:#bbdefb,stroke:#333
-    style OK fill:#c8e6c9,stroke:#333
-```
-
-## Fix
-
-### 步骤 1：部署 polyfill `formatter.py`
-
-仓库备份位于 `note/sdk/issue/formatter.py`，是 Python 3.10 删除的 `formatter` 标准库模块的完整 shim 实现。
+将 `formatter` 模块的 polyfill 手动放入 repo 工具路径：
 
 ```bash
-# 部署到 repo 工具目录
-cp note/sdk/issue/formatter.py sdk/repo/formatter.py
+cd ~/imx/sdk
 
-# 同步到 .repo 内部目录（防止 repo 自动下载覆盖）
+# 方式一：初始化前部署到本地 repo 工具目录
+cp formatter.py repo/formatter.py
+
+# 方式二：初始化后 .repo/repo/ 仍缺文件，则硬覆盖
 mkdir -p .repo/repo
-cp -r sdk/repo/* .repo/repo/
-```
+cp -r repo/* .repo/repo/
 
-### 步骤 2：使用本地 repo 初始化
-
-```bash
-sdk/repo/repo init -u https://gitee.com/weidongshan/manifests.git \
+# 然后正常初始化
+./repo/repo init \
+    -u https://gitee.com/weidongshan/manifests.git \
     -b linux-sdk \
     -m imx6ull/100ask_imx6ull_linux4.9.88_release.xml \
     --no-repo-verify
 
-repo sync
+./repo/repo sync -j4
 ```
 
-`--no-repo-verify` 阻止从网络拉取不兼容的旧版工具包。
+`--no-repo-verify` 阻止 repo 从网络重新下载旧版工具覆盖本地修复。
 
----
+# Addt-formatter.py
 
-## Appendix: formatter.py
-
-> 完整 polyfill 源码，重新实现被 Python 3.10 移除的 `formatter` 标准库模块。
-> 备份路径：`note/sdk/issue/formatter.py`
-
-```python
+```py
 import sys
 import warnings
 
@@ -262,9 +212,7 @@ class AbstractFormatter:
     def pop_margin(self):
         if self.margin_stack:
             del self.margin_stack[-1]
-        self.writer.new_margin(
-            self.margin_stack[-1] if self.margin_stack else None,
-            len(self.margin_stack))
+        self.writer.new_margin(self.margin_stack[-1] if self.margin_stack else None, len(self.margin_stack))
 
     def set_spacing(self, spacing):
         self.spacing = spacing
@@ -282,32 +230,45 @@ class AbstractFormatter:
             self.writer.send_flowing_data(' ')
             self.softspace = 0
         del self.style_stack[-n:]
-        self.writer.new_styles(
-            self.style_stack[-1] if self.style_stack else ())
+        self.writer.new_styles(self.style_stack[-1] if self.style_stack else ())
 
     def assert_line_data(self, flag=1):
         self.nook = flag
         self.have_label = 0
 
 class NullWriter:
-    def __init__(self): pass
-    def flush(self): pass
-    def new_alignment(self, align): pass
-    def new_font(self, font): pass
-    def new_margin(self, margin, level): pass
-    def new_spacing(self, spacing): pass
-    def new_styles(self, styles): pass
-    def send_paragraph(self, blankline): pass
-    def send_line_break(self): pass
-    def send_hor_rule(self, *args, **kw): pass
-    def send_label_data(self, data): pass
-    def send_flowing_data(self, data): pass
-    def send_literal_data(self, data): pass
+    def __init__(self):
+        pass
+    def flush(self):
+        pass
+    def new_alignment(self, align):
+        pass
+    def new_font(self, font):
+        pass
+    def new_margin(self, margin, level):
+        pass
+    def new_spacing(self, spacing):
+        pass
+    def new_styles(self, styles):
+        pass
+    def send_paragraph(self, blankline):
+        pass
+    def send_line_break(self):
+        pass
+    def send_hor_rule(self, *args, **kw):
+        pass
+    def send_label_data(self, data):
+        pass
+    def send_flowing_data(self, data):
+        pass
+    def send_literal_data(self, data):
+        pass
 
 class DumbWriter(NullWriter):
     def __init__(self, file=None, maxcol=72):
         self.file = file or sys.stdout
         self.maxcol = maxcol
+        self.null_writer = NullWriter()
         self.reset()
 
     def reset(self):
@@ -356,4 +317,6 @@ class DumbWriter(NullWriter):
             atbreak = 1
         self.col = col
         self.atbreak = atbreak
+
 ```
+
