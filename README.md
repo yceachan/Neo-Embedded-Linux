@@ -35,10 +35,12 @@
 
 ### Prerequisites
 
-- **Hardware**: NXP i.MX6ULL EVB( 100ASK_IMX6ULL_PRO).
-- **SDK:**[100ask-support BSP](./sdk/README.md);[BSP同步与py-3.10适配](./note/sdk/issue/01-100ask-BSP同步与py-3.10l适配.md)
+- **Hardware**: NXP i.MX6ULL EVB( 100ASK_IMX6ULL_PRO); TSPI RK3566.
+- **SDK:**
+  - [100ask-support BSP](./sdk/README.md);[BSP同步与py-3.10适配](./note/sdk/issue/01-100ask-BSP同步与py-3.10l适配.md)
+  - [TSPI RK3566 SDK](./sdk/README-tspi.md)
 - **Host**: Linux (Ubuntu 22.04+) on Windows (WSL2).
-- **Toolchain**: `arm-linux-gnueabihf-` (provided in SDK).
+- **Toolchain**: `arm-linux-gnueabihf-` (provided in i.MX6 SDK) / `aarch64-none-linux-gnu-` (provided in TSPI SDK).
 
 ### Start-Route
 

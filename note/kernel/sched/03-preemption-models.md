@@ -1,4 +1,3 @@
-
 ---
 title: 内核抢占模型
 tags: [kernel, sched, preempt, preempt_count, cond_resched]
