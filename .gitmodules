@@ -1,0 +1,3 @@
+[submodule "note/BSP-Dev/LCD-Touch/tspi-mipi-dsi-3_1_inch"]
+	path = note/BSP-Dev/LCD-Touch/tspi-mipi-dsi-3_1_inch
+	url = git@gitee.com:fengmoxi/tspi-d310t9362v1.git

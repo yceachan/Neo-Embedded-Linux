@@ -4,9 +4,9 @@
 >
 > Hardware Platform : NXP i.MX6ULL. ; RK 3566;
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Platform](https://img.shields.io/badge/platform-NXP%20i.MX6ULL-green.svg)
-![Kernel](https://img.shields.io/badge/kernel-Linux%204.9.88-orange.svg)
+![License](https://img.shields.io/badge/license-GPLv3.0-blue.svg)
+![Platform](https://img.shields.io/badge/platform-NXP%20i.MX6ULL;RK3566-green.svg)
+![Kernel](https://img.shields.io/badge/kernel-Linux%204.9.88;Linux6.1-orange.svg)
 ![Status](https://img.shields.io/badge/status-Active-brightgreen.svg)
 
 **Neo-Embedded-Linux** is a next-generation repository dedicated to embedded Linux learning and driver development. Unlike traditional tutorials, this project leverages **AI Agents (Gemini CLI)** to govern knowledge bases, standardize code quality, and accelerate the learning curve from "Hello World" to complex subsystem drivers.
@@ -29,7 +29,6 @@
 | `prj/` | **The Code Forge.** Source code for kernel drivers and applications. <br> *Includes: `01_hello_drv`, `gpio_drv`, and standardized Makefiles.* |
 | `sdk/` | **The Foundation.** NXP/100ASK BSP, Linux 4.9 Kernel source, and Toolchains. |
 | `docs/` | **The Reference.** Official datasheets (IMX6ULL RM), board schematics, and vendor manuals. |
-| `GEMINI.md`| **The Agent Protocol.** Rules and conventions for AI Agents interacting with this repository. |
 
 ## 🛠️ Getting Started
 
@@ -37,8 +36,8 @@
 
 - **Hardware**: NXP i.MX6ULL EVB( 100ASK_IMX6ULL_PRO); TSPI RK3566.
 - **SDK:**
-  - [100ask-support BSP](./sdk/README.md);[BSP同步与py-3.10适配](./note/sdk/issue/01-100ask-BSP同步与py-3.10l适配.md)
-  - [TSPI RK3566 SDK](./sdk/README-tspi.md)
+  - [100ask-support BSP](./sdk/README.md);[BSP同步与py-3.10适配](sdk/issue/01-100ask-BSP同步与py-3.10适配.md)
+  - [TSPI RK3566 SDK](./sdk/Setup-tspi.md)
 - **Host**: Linux (Ubuntu 22.04+) on Windows (WSL2).
 - **Toolchain**: `arm-linux-gnueabihf-` (provided in i.MX6 SDK) / `aarch64-none-linux-gnu-` (provided in TSPI SDK).
 
@@ -46,7 +45,6 @@
 
 #### 0. SDK & Dev-Env
 
-- 100ask BSP sync & py-3.10 fix → [`note/sdk/01_100ask-BSP同步与py-3.10l适配.md`](./note/sdk/01_100ask-BSP同步与py-3.10l适配.md)
 - Kernel pre-build & out-of-tree module flow → [`note/sdk/02_内核预编译与树外module开发流程.md`](./note/sdk/02_内核预编译与树外module开发流程.md)
 - `compile_commands.json` via Bear → [`note/sdk/03_使用Bear生成编译数据库.md`](./note/sdk/03_使用Bear生成编译数据库.md)
 - NFS rootfs mount → [`note/sdk/00_NFS挂载准备.md`](./note/sdk/00_NFS挂载准备.md)
@@ -126,6 +124,6 @@
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPLv3.0 License - see the [LICENSE](LICENSE) file for details.
 
 Copyright (c) 2026 @yceachan

@@ -11,8 +11,8 @@ update: 2026-04-26
 
 ## 1. Kernel 层：RNDIS 支持与 UDC 硬件释放
 
-### 1.1 清理旧版驱动，开启 ConfigFS
-*   **痛点**：内核默认开启了传统网卡 Gadget，阻碍了动态 ConfigFS 接管 USB 控制器。
+### 1.1 开启 ConfigFS_ETH*，但不使用传统Gadget
+*   **痛点**：内核默认开启了传统网卡 Gadget，阻碍了动态 ConfigFS 接管 USB 控制器，这可能导致usb总线上的read event风暴。
 *   **方案**：在内核配置 (`./build.sh kconfig`) 中彻底禁用 `CONFIG_USB_ETH` 及相关旧架构，开启 ConfigFS ECM/RNDIS。
 *   **补丁 (`sdk/tspi-rk3566-sdk/kernel-6.1/arch/arm64/configs/rockchip_linux_defconfig`)**:
     ```diff
@@ -37,7 +37,7 @@ update: 2026-04-26
     ```
 
 ### 1.2 屏蔽物理引脚干涉
-*   **痛点**：底层设备树会监听 Type-C 物理状态，易误判为 Host 模式导致外设注册失败。
+*   **痛点**：底层设备树会监听 Type-C 物理状态，易误判为 Host 模式导致外设注册失败。（maybe）
 *   **方案**：强制删除 `extcon` 属性，固定为从机 (peripheral) 模式。
 *   **补丁 (`sdk/tspi-rk3566-sdk/kernel-6.1/arch/arm64/boot/dts/rockchip/tspi-rk3566-user-v10-linux.dts`)**:
     ```diff
@@ -81,7 +81,8 @@ update: 2026-04-26
 
 ---
 
-## 3. Rootfs 层：ADB-RNDIS 兼容与网络自启
+## 3. Shell层：ADB-RNDIS 兼容与网络自启
+
 ### 3.1 规避 USB 脚本正则解析陷阱
 *   **痛点**：官方 `/usr/bin/usb-gadget` 脚本对配置文件解析存在正则缺陷，遇到 `=on` 等赋值会截断异常。
 *   **方案**：配置文件中**严禁使用 `=on`**，仅保留宏名本身。
