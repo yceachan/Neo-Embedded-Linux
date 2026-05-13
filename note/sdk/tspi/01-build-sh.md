@@ -8,9 +8,13 @@ update: 2026-04-26
 # Tspi RK3566 SDK build.sh 分析
 
 > [!note]
-> **Ref:** [sdk/tspi-rk3566-sdk/build.sh](sdk/tspi-rk3566-sdk/build.sh)
+> **Ref:** [sdk/tspi-rk3566-sdk/build.sh](sdk/tspi-rk3566-sdk/build.sh) ; [tspi_env.sh](../../../tspi_env.sh)
 
 基于对 `tspi-rk3566-sdk` 中 `build.sh` 及底层相关脚本的分析，以下是关于该 SDK 编译脚本的功能、编译选项以及多线程编译情况的详细总结：
+
+> [!IMPORTANT]
+>
+> build.sh->buildroot 是严格的构建系统，$PATH中不允许出现带空格路径，务必`sourece tspi_env.sh` 清理WSL继承的WINs PATH
 
 ## 1. `build.sh` 功能解析
 `build.sh` 是瑞芯微 (Rockchip) 体系 SDK 的顶层统一编译入口。它的核心设计并不直接包含具体每个模块的编译命令，而是**基于 Hook（钩子）机制**进行任务调度。

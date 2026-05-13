@@ -5,6 +5,10 @@
 		},
 		{
 			"path": "../sdk/tspi-rk3566-sdk/kernel-6.1"
+		},
+		{
+			"path": "../.",
+			"name": "[Repo Base]"
 		}
 	],
 	"settings": {
