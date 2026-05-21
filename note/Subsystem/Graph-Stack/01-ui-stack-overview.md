@@ -328,7 +328,13 @@ flowchart TB
 
 > [!note]
 >
-> **EGL** 是 [Khronos](https://en.wikipedia.org/wiki/Khronos_Group)[ 渲染 API](https://en.wikipedia.org/wiki/Rendering_API)（如 [OpenGL、](https://en.wikipedia.org/wiki/OpenGL)[OpenGL ES](https://en.wikipedia.org/wiki/OpenGL_ES) 或 [OpenVG](https://en.wikipedia.org/wiki/OpenVG)）与底层原生[平台窗口系统](https://en.wikipedia.org/wiki/Windowing_system)之间的[接口 ](https://en.wikipedia.org/wiki/Interface_(computing))。EGL 负责图形上下文管理、[ 表面 ](https://en.wikipedia.org/wiki/Computer_representation_of_surfaces)/[ 缓冲](https://en.wikipedia.org/wiki/Data_buffer)区绑定、[ 渲染](https://en.wikipedia.org/wiki/Rendering_(computer_graphics))同步，并支持“使用其他 Khronos API 实现高性能、加速、混合模式的[二维](https://en.wikipedia.org/wiki/2D_computer_graphics)和[三维](https://en.wikipedia.org/wiki/3D_computer_graphics)渲染”。 [[2\]](https://en.wikipedia.org/wiki/EGL_(API)#cite_note-2) EGL 由[非营利](https://en.wikipedia.org/wiki/Non-profit_organization)技术联盟 [Khronos Group](https://en.wikipedia.org/wiki/Khronos_Group) 管理。
+> EGL 是 OpenGL ES 渲染 API 和本地窗口系统之间的一个中间接口层，它主要由系统制造商实现。EGL 提供如下机制：
+>
+> - 与设备的原生窗口系统通信；
+> - 查询绘图图层的可用类型和配置；
+> - 创建绘图图层；
+> - 在 OpenGL ES 和其他图形渲染 API 之间同步渲染；
+> - 管理纹理贴图等渲染资源。
 
 | 名字 | 是什么 | 典型用法 |
 |------|-------|---------|

@@ -1,0 +1,57 @@
+# =============================================================================
+#  Rust 交叉编译核心配置 ——「让 cargo build 默认产出 aarch64 ELF」
+#
+#  本文件由 Cargo 自动加载（项目根 / 上级 / $CARGO_HOME 的 config.toml 都会扫）。
+#  Make 必须显式 `make CC=...`，而 Cargo 走配置文件 + 环境变量两条路：
+#  这里写的就是配置文件那条。env 那条由 build.sh / test.sh 注入（见 §[env]）。
+#
+#  四件套：
+#    1) build.target              —— 三元组，rustc 用它选 target spec
+#    2) build.target-dir          —— 把所有产物收口到 output/target/
+#    3) target.<triple>.linker    —— 让 rustc 调 buildroot gcc 做最终链接
+#    4) [env] PKG_CONFIG_*        —— 让 cairo-sys-rs 的 build.rs 看 buildroot sysroot
+# =============================================================================
+
+[build]
+target     = "aarch64-unknown-linux-gnu"
+target-dir = "output/target"
+
+# -----------------------------------------------------------------------------
+# 链接器：复用 buildroot 已经编出来的 aarch64-buildroot-linux-gnu-gcc。
+# 关键性：rustc 自己不会做最终 link —— 它把 .o 交给一个外部 linker(driver) 串
+# 起 crt1.o / libc.so / ld-linux-aarch64.so.1 等运行时小件。
+# 只有 buildroot 的这套工具链与板上 rootfs **同源**，否则会出现 glibc 版本不匹配。
+# -----------------------------------------------------------------------------
+[target.aarch64-unknown-linux-gnu]
+linker = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc"
+ar     = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-ar"
+
+# -----------------------------------------------------------------------------
+# [env]：pkg-config 三件套 + cc crate 兜底
+#
+#  PKG_CONFIG_SYSROOT_DIR
+#     给 pkg-config 找到的每条 -I / -L 自动加前缀；
+#     `.pc` 里写的是 prefix=/usr，加完前缀就是 /sysroot/usr —— 命中 aarch64 头/库。
+#
+#  PKG_CONFIG_LIBDIR （注意不是 PATH！）
+#     **替换** pkg-config 的默认搜索路径，**不再看宿主 /usr/lib/pkgconfig**。
+#     若用 PKG_CONFIG_PATH，是"追加"语义，宿主 x86_64 .pc 仍会被找到，
+#     交叉编译时 50% 概率链错库 —— 必须用 LIBDIR。
+#
+#  PKG_CONFIG_ALLOW_CROSS=1
+#     pkg-config-rs (build.rs 里用的 crate) 默认在 host ≠ target 时**拒绝运行**，
+#     避免新手误用宿主库。我们明确知道在做交叉编译，于是开闸。
+#
+#  CC_<triple> / AR_<triple>
+#     当某个 *-sys crate 通过 `cc` crate 编 C 源码（cairo-sys-rs 不需要，
+#     但比如 ring / openssl-sys 会），cc crate 默认拿宿主 gcc。
+#     必须按三元组覆盖，否则编出 x86_64 .o 与 aarch64 .o 混链。
+# -----------------------------------------------------------------------------
+[env]
+PKG_CONFIG_ALLOW_CROSS = "1"
+PKG_CONFIG_SYSROOT_DIR = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot"
+PKG_CONFIG_LIBDIR      = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot/usr/lib/pkgconfig"
+
+CC_aarch64_unknown_linux_gnu  = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc"
+CXX_aarch64_unknown_linux_gnu = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-g++"
+AR_aarch64_unknown_linux_gnu  = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-ar"

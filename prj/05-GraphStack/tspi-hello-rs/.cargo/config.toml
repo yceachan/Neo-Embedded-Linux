@@ -1,0 +1,17 @@
+# Rust 交叉编译配置 —— 让 `cargo build` 默认产出 aarch64 ELF
+# Cargo 自动加载该文件，无需任何环境变量。
+#
+# 关键三件套：
+#   build.target              统一目标三元组（avoid 每次 --target）
+#   target.<triple>.linker    指定调用谁来做最终链接
+#   target.<triple>.ar        交叉 ar（rust-lld 不需要，但 *-sys crate 可能用 cc）
+#
+# 我们复用 buildroot 已构建好的 aarch64-buildroot-linux-gnu-gcc 作为 linker，
+# 这样 rustc 产出的 .o 会被它链接到与板上 rootfs 同源的 glibc/动态库。
+
+[build]
+target = "aarch64-unknown-linux-gnu"
+
+[target.aarch64-unknown-linux-gnu]
+linker = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc"
+ar     = "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-ar"

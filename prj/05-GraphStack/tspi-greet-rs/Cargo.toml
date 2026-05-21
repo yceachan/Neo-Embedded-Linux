@@ -1,0 +1,33 @@
+[package]
+name = "tspi-greet-rs"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "tspi-greet-rs"
+path = "src/main.rs"
+
+# 体积优先 release 配置 —— 与 tspi-hello-rs 对齐
+# 实测 cairo 链接体积 ≈ 280KB（动态链 cairo / wayland-client）
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[dependencies]
+# wayland-client / wayland-protocols 默认走纯 Rust 实现，
+# 通过 unix domain socket 与 compositor 直接讲 wayland wire protocol —
+# 不依赖 libwayland-client.so 的链接。
+wayland-client    = "0.31"
+wayland-protocols = { version = "0.31", features = ["client"] }
+
+# cairo-rs 是真正的 *-sys 绑定 —— 编译时通过 pkg-config 找 libcairo，
+# 因此构成本 demo "PKG_CONFIG_* 三件套"的关键演示靶点。
+cairo-rs = { version = "0.18", default-features = false }
+
+# 用户态 SHM 后备文件 & 映射（纯 Rust，无 sysroot 依赖）
+tempfile = "3"
+memmap2  = "0.9"
+libc     = "0.2"

@@ -565,28 +565,27 @@ sequenceDiagram
 
 ### 8.1 交叉工具链
 
-`tspi_env.sh`（仓库根）已经准备好：
+buildroot 内部的 toolchain（带完整 sysroot）：
 
 ```sh
-export SDK_DIR="/home/pi/imx/sdk/tspi-rk3566-sdk"
-export KERN_DIR="$SDK_DIR/kernel-6.1"
-export ARCH=arm64
-export CROSS_COMPILE=aarch64-none-linux-gnu-
-export PATH=$PATH:$SDK_DIR/prebuilts/gcc/linux-x86/aarch64/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu/bin
+sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/
+├── host/
+│   ├── bin/
+│   │   ├── aarch64-buildroot-linux-gnu-gcc   # 交叉编译器
+│   │   ├── aarch64-buildroot-linux-gnu-readelf
+│   │   └── wayland-scanner                   # 协议代码生成器（host arch）
+│   └── aarch64-buildroot-linux-gnu/sysroot/  # 目标 rootfs 镜像
+│       └── usr/
+│           ├── include/
+│           │   ├── wayland-client.h
+│           │   ├── wayland-server.h
+│           │   └── cairo/cairo.h
+│           ├── lib/
+│           │   ├── libwayland-client.so → .0.x.x
+│           │   ├── libcairo.so → .2.x.x
+│           │   └── libpixman-1.so ...
+│           └── share/wayland-protocols/stable/xdg-shell/xdg-shell.xml
 ```
-
-`source ~/imx/tspi_env.sh` 之后 `aarch64-none-linux-gnu-gcc` 就能用。这是 ARM 官方 GCC 10.3，**只够编纯应用，不带 buildroot 装出来的所有库 sysroot**。
-
-如果要 link `libwayland-client.so` / `libEGL.so` 等运行时库，更可靠的做法是用 buildroot 内部的 toolchain（带完整 sysroot）：
-
-```sh
-export SYSROOT=$SDK_DIR/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot
-export BR_CC=$SDK_DIR/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc
-export PKG_CONFIG_PATH=$SYSROOT/usr/lib/pkgconfig:$SYSROOT/usr/share/pkgconfig
-export PKG_CONFIG_SYSROOT_DIR=$SYSROOT
-```
-
-这条更适合 GTK/Qt 这种 pkg-config 密集型应用。
 
 ### 8.2 路径 A：GTK3 / GTK4 应用走 wayland 后端
 
@@ -712,15 +711,6 @@ int main(void) {
 $BR_CC minimal-shm.c -o minimal-shm $(pkg-config --cflags --libs wayland-client)
 ```
 
-### 8.5 部署与运行通道
-
-| 通道 | 用法 |
-|---|---|
-| **NFS**（推荐） | 本地 `prj/mount/` ↔ 板上 `/mnt/`，`cp` 即上板。需要 `BR2_PACKAGE_NFS_UTILS=y`（已启用） |
-| **scp** | RNDIS/wlan0 可达后 `scp app root@tspi:/tmp/`（USB-RNDIS 默认未开，需自行 enable，见 MEMORY.md tspi 条目） |
-| **adb push** | `RK_USB_ADBD=y` 已启用，TCP 端口 5555。`adb shell` 走 `/bin/bash` |
-| **串口** | 当 RNDIS/adb 都挂掉时唯一通道，**没有 `ssh tspi`** |
-
 
 ## 9. 自定义无 DE / 单窗口（kiosk）方案
 
@@ -742,14 +732,78 @@ $BR_CC minimal-shm.c -o minimal-shm $(pkg-config --cflags --libs wayland-client)
    
    [autolaunch]
    path=/usr/bin/my-fullscreen-app
-   watch=true
    ```
 2. 把 `02-desktop.ini` 里 `panel-position=bottom` 去掉或注释（kiosk 不需要 panel）。
 3. `/etc/init.d/S49weston restart`。
 
-kiosk-shell 行为：所有 client 强制 fullscreen，没有 panel、没有桌面 launcher，第一个 toplevel 自动被 grab 输入焦点；`watch=true` 让 weston 监督进程，挂了自动重启。
+kiosk-shell 行为：所有 client 强制 fullscreen，没有 panel、没有桌面 launcher，第一个 toplevel 自动被 grab 输入焦点；
 
-> **❓ 待确认**：tspi 上 weston 自带的 `[autolaunch]` 段是上游 14 标准 section（在 `weston.ini.5` man page 中确认）。如果版本细节有差，可改用 `weston --shell=kiosk-shell.so -- /usr/bin/my-app` 形式，从 `S49weston` 拉起。
+> [!tip]
+>
+> `/etc/init.d/S49weston` ：sdk提供的weston profile
+>
+> ```sh
+> root@taishanpi:~# cat /etc/init.d/S49weston
+> #!/bin/sh
+> ### BEGIN INIT INFO
+> # Provides:          weston
+> # Required-Start:    mountvirtfs
+> # Required-Stop:
+> # Should-Start:
+> # Should-Stop:
+> # Default-Start:     2 3 4 5
+> # Default-Stop:      0 1 6
+> # Short-Description: Linux weston daemon
+> ### END INIT INFO
+> 
+> PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+> 
+> # Load default env variables from profiles(e.g. /etc/profile.d/weston.sh)
+> . /etc/profile
+> 
+> start_weston()
+> {
+>         /usr/bin/weston 2>&1 | tee /var/log/weston.log &
+> }
+> 
+> stop_weston()
+> {
+>         killall weston
+> }
+> 
+> case "$1" in
+>         start)
+>                 echo -n "starting weston... "
+>                 start_weston
+>                 echo "done."
+>                 ;;
+>         stop)
+>                 echo -n "stoping weston... "
+>                 stop_weston || true
+>                 echo "done."
+>                 ;;
+>         restart|reload)
+>                 echo -n "stoping weston... "
+>                 stop_weston
+> 
+>                 while pgrep -x weston; do
+>                         sleep .1
+>                 done
+>                 echo "done."
+> 
+>                 echo -n "starting weston... "
+>                 start_weston
+>                 echo "done."
+>                 ;;
+>         *)
+>                 echo "Usage: $0 {start|stop|restart}"
+>                 exit 1
+> esac
+> 
+> exit 0
+> ```
+
+
 
 ### 9.2 方案 B：完全去掉 weston，直吃 DRM/KMS
 

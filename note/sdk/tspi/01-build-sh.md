@@ -17,6 +17,109 @@ update: 2026-04-26
 > build.sh->buildroot 是严格的构建系统，$PATH中不允许出现带空格路径，务必`sourece tspi_env.sh` 清理WSL继承的WINs PATH
 
 ## 1. `build.sh` 功能解析
+
+```bash
+❯ ./build.sh --help
+
+############### Rockchip Linux SDK ###############
+
+Manifest: tspi_1m_rk3566_linux.xml
+GIT commit: "d5a43f8 适配泰山派1M-20260401-103617"
+
+Log colors: message notice warning error fatal
+
+Usage: build.sh [OPTIONS]
+Available options:
+chip[:<chip>[:<config>]]                choose chip
+defconfig[:<config>]                    choose defconfig
+ *_defconfig                            switch to specified defconfig
+    available defconfigs:
+    rockchip_defconfig
+    rockchip_rk3566_evb2_lp4x_v10_32bit_defconfig
+    rockchip_rk3566_evb2_lp4x_v10_defconfig
+    rockchip_rk3566_taishanpi_1m_v10_defconfig
+    rockchip_rk3568_evb1_ddr4_v10_32bit_defconfig
+    rockchip_rk3568_evb1_ddr4_v10_defconfig
+    rockchip_rk3568_pcie_ep_lp4x_v10_defconfig
+ olddefconfig                           resolve any unresolved symbols in .config
+ savedefconfig                          save current config to defconfig
+ menuconfig                             interactive curses-based configurator
+config                                  modify SDK defconfig
+config-rootfs-type                      modify SDK rootfs type config
+config-usb-gadget                       modify SDK USB gadget config
+config-wifibt                           modify SDK Wi-Fi/BT config
+config-rootfs-overlay                   modify SDK rootfs overlay config
+config-overlay                          alias of config-rootfs-overlay
+config-post-rootfs                      modify SDK post rootfs config
+config-extra-parts                      modify SDK extra partitions config
+print-parts                             print partitions
+list-parts                              alias of print-parts
+edit-parts                              edit raw partitions
+misc                                    pack misc image
+kernel-6.1[:dry-run]                    build kernel 6.1
+kernel[:dry-run]                        build kernel
+recovery-kernel[:dry-run]               build kernel for recovery
+kernel-modules[:<dst dir>:dry-run]      build kernel modules
+modules[:<dst dir>:dry-run]             alias of kernel-modules
+linux-headers[:<arch>:dry-run]          build linux-headers
+kernel-config[:dry-run]                 modify kernel defconfig
+kconfig[:dry-run]                       alias of kernel-config
+kernel-make[:<arg1>:<arg2>]             run kernel make
+kmake[:<arg1>:<arg2>]                   alias of kernel-make
+wifibt[:<dst dir>[:<chip>]]             build Wifi/BT
+amp                                     build and pack amp system
+buildroot-config[:<config>]             modify buildroot defconfig
+bconfig[:<config>]                      alias of buildroot-config
+buildroot-make[:<arg1>:<arg2>]          run buildroot make
+bmake[:<arg1>:<arg2>]                   alias of buildroot-make
+buildroot-sdk                           build the buildroot SDK tarball
+bsdk                                    alias of buildroot-sdk
+edit-debian-packages                    edit debian package list
+rootfs[:<rootfs type>]                  build default rootfs
+buildroot                               build buildroot rootfs
+yocto                                   build yocto rootfs
+debian                                  build debian rootfs
+recovery                                build recovery
+security-createkeys                     create keys for security
+security-misc                           build misc with system encryption key
+security-ramboot[:system_image]         build security ramboot
+security-system[:system_image]          build security system
+security-remote-sign                    build remote signed image
+loader[:dry-run]                        build loader (u-boot)
+uboot[:dry-run]                         build u-boot
+u-boot[:dry-run]                        alias of uboot
+extra-parts                             pack extra partition images
+firmware                                pack and check firmwares
+edit-package-file                       edit package-file
+edit-ota-package-file                   edit package-file for OTA
+updateimg                               build update image
+ota-updateimg                           build update image for OTA
+all                                     build images
+release[:<subdir>[:<name>]]             release images and build info
+all-release[:<subdir>[:<name>]]         build and release images
+shell                                   setup a shell for developing
+buildroot-shell                         setup a shell for buildroot developing
+bshell                                  alias of buildroot-shell
+yocto-shell                             setup a shell for yocto developing
+yshell                                  alias of yocto-shell
+cleanall                                cleanup all
+clean-extra-parts                       cleanup extra-parts
+clean-amp                               cleanup amp
+clean-security                          cleanup security
+clean-config                            cleanup config
+clean-misc                              cleanup misc
+clean-recovery                          cleanup recovery
+clean-updateimg                         cleanup updateimg
+clean-rootfs                            cleanup rootfs
+clean-firmware                          cleanup firmware
+clean-kernel                            cleanup kernel
+clean-loader                            cleanup loader
+post-rootfs <rootfs dir>                trigger post-rootfs hook scripts
+help                                    display this information
+```
+
+
+
 `build.sh` 是瑞芯微 (Rockchip) 体系 SDK 的顶层统一编译入口。它的核心设计并不直接包含具体每个模块的编译命令，而是**基于 Hook（钩子）机制**进行任务调度。
 它主要负责：
 *   **环境初始化**：构建统一的目录树变量（`RK_OUTDIR`、`RK_SDK_DIR` 等）。

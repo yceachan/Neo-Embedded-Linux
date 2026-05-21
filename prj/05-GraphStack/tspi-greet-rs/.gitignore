@@ -1,0 +1,10 @@
+# 只保留目录结构，不入库二进制 / 日志
+output/*
+!output/.gitkeep
+!output/bin/
+output/bin/*
+!output/log/
+output/log/*
+
+# Cargo lock 由 [[bin]] 应用入库；target/ 已经被 target-dir 重定向到 output/target/
+Cargo.lock

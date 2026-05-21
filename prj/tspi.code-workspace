@@ -12,6 +12,9 @@
 		}
 	],
 	"settings": {
+		"rust-analyzer.linkedProjects": [
+			"/home/pi/imx/prj/05-GraphStack/tspi-greet-rs/Cargo.toml"
+		],
 		"terminal.integrated.env.linux": {
 			"KERN_DIR": "/home/pi/imx/sdk/tspi-rk3566-sdk/kernel-6.1",
 			"ARCH": "arm64",
