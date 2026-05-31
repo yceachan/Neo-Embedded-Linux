@@ -1,0 +1,39 @@
+{
+  "assertions": [
+    {
+      "text": "答案明确提到 UAC2 协议名",
+      "passed": true,
+      "evidence": "match in answer: 'UAC2'"
+    },
+    {
+      "text": "答案至少给出 ConfigFS 配置或 g_audio 模块两种实现路径之一",
+      "passed": true,
+      "evidence": "match in answer: 'configfs'"
+    },
+    {
+      "text": "答案提及相关内核 Kconfig 项",
+      "passed": true,
+      "evidence": "match in answer: 'CONFIG_USB_CONFIGFS_F_UAC2'"
+    },
+    {
+      "text": "答案/trace 引用 USB_Gadget_UAC PDF",
+      "passed": true,
+      "evidence": "match in answer: 'Gadget UAC'"
+    },
+    {
+      "text": "[with_skill only] trace 表明综合了 ≥2 份 PDF (e.g. USB Gadget UAC + Quick Start USB Gadget 或 USB 通用)",
+      "passed": true,
+      "evidence": "N/A for baseline (skill-only assertion)",
+      "n_a": true
+    },
+    {
+      "text": "[with_skill only] 在 references/distilled/ 下创建了 UAC 相关的蒸馏文件",
+      "passed": true,
+      "evidence": "N/A for baseline (skill-only assertion)",
+      "n_a": true
+    }
+  ],
+  "passed": 4,
+  "total": 4,
+  "pass_rate": 1.0
+}

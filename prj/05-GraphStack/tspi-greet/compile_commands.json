@@ -1,0 +1,40 @@
+[
+  {
+    "arguments": [
+      "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc",
+      "-c",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-O2",
+      "-Wall",
+      "-Wno-unused-parameter",
+      "-Isrc",
+      "-I/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/cairo",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-o",
+      "output/bin/tspi-greet",
+      "src/main.c"
+    ],
+    "directory": "/home/pi/imx/prj/05-GraphStack/tspi-greet",
+    "file": "/home/pi/imx/prj/05-GraphStack/tspi-greet/src/main.c",
+    "output": "/home/pi/imx/prj/05-GraphStack/tspi-greet/output/bin/tspi-greet"
+  },
+  {
+    "arguments": [
+      "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc",
+      "-c",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-O2",
+      "-Wall",
+      "-Wno-unused-parameter",
+      "-Isrc",
+      "-I/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/cairo",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-o",
+      "output/bin/tspi-greet",
+      "src/xdg-shell-protocol.c"
+    ],
+    "directory": "/home/pi/imx/prj/05-GraphStack/tspi-greet",
+    "file": "/home/pi/imx/prj/05-GraphStack/tspi-greet/src/xdg-shell-protocol.c",
+    "output": "/home/pi/imx/prj/05-GraphStack/tspi-greet/output/bin/tspi-greet"
+  }
+]

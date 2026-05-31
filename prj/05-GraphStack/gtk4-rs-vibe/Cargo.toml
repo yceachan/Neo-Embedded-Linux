@@ -1,0 +1,10 @@
+[package]
+name = "gtk4-demo"
+version = "0.1.0"
+edition = "2021"
+description = "GTK4-rs GUI paradigm demo: 3D rendering pipeline, declarative UI, window surface management"
+
+[dependencies]
+gtk4 = "0.7"
+gdk4 = "0.7"
+glib = "0.18"

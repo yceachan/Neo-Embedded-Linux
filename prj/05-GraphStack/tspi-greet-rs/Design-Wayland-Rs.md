@@ -22,9 +22,7 @@ update: 2026-05-21
 
 ![ChatGPT Image 2026年5月21日 19_11_46](https://ali-oss-yceachan.oss-cn-chengdu.aliyuncs.com/img-bed-typora/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%8821%E6%97%A5%2019_11_46.png)
 
-每个组件存在的理由：
-
-- **`Connection`**：纯 Rust 写的 wayland-rs 直接打开 `$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY`，按 wayland wire 协议收发 — 因此**最终 ELF 不需要链 `libwayland-client.so`**（见 [Design-CrossCompile.md §7](Design-CrossCompile.md)）。
+- **`Connection`**：静态链接wayland-client rust实现
 - **`EventQueue<App>`**：reactor 主循环。等价于 C 版的 `while wl_display_dispatch(dpy)`。
 - **每个 `impl Dispatch<I, U>`**：把 C 版本里"对每个对象都写一个 listener struct + 回调函数"的模式，**静态分派**到 trait 方法。编译期就能保证"事件 → 处理"完整无遗漏。
 - **`wayland-protocols::xdg::shell::client`**：等价于 `wayland-scanner client-header` 生成的 `xdg-shell-client.h` —— 但**在编译期由 build.rs 完成**，无需任何外部 `.xml` 输入或运行 scanner。

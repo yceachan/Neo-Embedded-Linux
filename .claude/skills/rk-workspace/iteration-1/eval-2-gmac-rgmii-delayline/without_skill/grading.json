@@ -1,0 +1,39 @@
+{
+  "assertions": [
+    {
+      "text": "答案明确给出 tx_delay 与 rx_delay 两个配置项",
+      "passed": true,
+      "evidence": "match in answer: 'tx_delay'"
+    },
+    {
+      "text": "答案明确提到 rx_delay",
+      "passed": true,
+      "evidence": "match in answer: 'rx_delay'"
+    },
+    {
+      "text": "答案包含 DTS 片段且使用 phy-mode = \"rgmii\"",
+      "passed": true,
+      "evidence": "match in answer: 'phy-mode    = \"rgmii'"
+    },
+    {
+      "text": "答案给出验证方法 (示波器、ping/iperf、ethtool、扫描脚本至少一种)",
+      "passed": true,
+      "evidence": "match in answer: '示波器'"
+    },
+    {
+      "text": "[with_skill only] 答案或 trace 引用 GMAC RGMII Delayline PDF 路径或页码",
+      "passed": true,
+      "evidence": "N/A for baseline (skill-only assertion)",
+      "n_a": true
+    },
+    {
+      "text": "[with_skill only] 在 references/distilled/ 下创建了与 GMAC RGMII 相关的蒸馏文件",
+      "passed": true,
+      "evidence": "N/A for baseline (skill-only assertion)",
+      "n_a": true
+    }
+  ],
+  "passed": 4,
+  "total": 4,
+  "pass_rate": 1.0
+}

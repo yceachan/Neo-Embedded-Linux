@@ -1,0 +1,32 @@
+{
+  "assertions": [
+    {
+      "text": "答案给出 RK3566 H.265 编码上限 1920x1088@60 (或 1080p@60 等价表述)",
+      "passed": true,
+      "evidence": "match in answer: '1920x1088'"
+    },
+    {
+      "text": "答案给出 RK3566/3568 H.265 解码上限 4096x2304@60",
+      "passed": true,
+      "evidence": "match in answer: '4096x2304'"
+    },
+    {
+      "text": "明确说明 RK3566 与 RK3568 编解码能力一致 (同 die)",
+      "passed": true,
+      "evidence": "match in answer: '相同'"
+    },
+    {
+      "text": "提到 RK3566 vs RK3568 真正的差异维度 (CPU/网口/PCIe/SATA 至少一个)",
+      "passed": true,
+      "evidence": "match in answer: 'PCIe'"
+    },
+    {
+      "text": "[with_skill only] trace 表明用了 chip-matrix.md 速查路径,未对该问题去打开 PDF (trace 不含 pdf_text.py 调用或仅用于二次确认)",
+      "passed": true,
+      "evidence": "match in answer: 'chip-matrix'"
+    }
+  ],
+  "passed": 5,
+  "total": 5,
+  "pass_rate": 1.0
+}

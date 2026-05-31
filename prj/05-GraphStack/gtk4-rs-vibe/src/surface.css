@@ -1,0 +1,29 @@
+/* Surface monitor tab styles */
+
+.surface-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e0e0e0;
+    margin-bottom: 4px;
+}
+
+.surface-prop {
+    font-size: 15px;
+    font-weight: 600;
+    color: #a0a0a0;
+}
+
+.surface-val {
+    font-size: 15px;
+    font-family: monospace;
+    color: #8bc4ff;
+}
+
+.surface-legend {
+    font-size: 13px;
+    color: #777;
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: #1a1a1a;
+    border-radius: 6px;
+}

@@ -1,4 +1,0 @@
-# Kbuild for adv_io_drv
-
-obj-m += adv_io_drv.o
-adv_io_drv-y := src/adv_io_main.o src/adv_io_dev.o src/adv_io_fops.o

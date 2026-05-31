@@ -1,0 +1,37 @@
+{
+  "eval_id": 1,
+  "eval_name": "chip-matrix-lookup",
+  "prompt": "我手上的 TSPI 板子用的是 RK3566 这颗 SoC。我想跑 H.265 视频编码,能到多少分辨率和帧率? 跟 RK3568 有差别吗? 顺便说下解码端能力上限。",
+  "assertions": [
+    {
+      "id": "h265_encode_spec",
+      "text": "答案给出 RK3566 H.265 编码上限 1920x1088@60 (或 1080p@60 等价表述)",
+      "verifier": "regex_in_answer",
+      "pattern": "1920[xX×]1088|1080[pP].*60|1920[^\\d]+1080.*60"
+    },
+    {
+      "id": "h265_decode_spec",
+      "text": "答案给出 RK3566/3568 H.265 解码上限 4096x2304@60",
+      "verifier": "regex_in_answer",
+      "pattern": "4096[xX×]2304"
+    },
+    {
+      "id": "codec_parity",
+      "text": "明确说明 RK3566 与 RK3568 编解码能力一致 (同 die)",
+      "verifier": "regex_in_answer",
+      "pattern": "(一致|相同|同 ?die|同一颗|没.{0,4}差别|无.{0,4}差异|编解码.{0,8}(一样|一致))"
+    },
+    {
+      "id": "real_diff_mentioned",
+      "text": "提到 RK3566 vs RK3568 真正的差异维度 (CPU/网口/PCIe/SATA 至少一个)",
+      "verifier": "regex_in_answer",
+      "pattern": "(GMAC|双.?千兆|PCIe|SATA|CPU 频率|2.?0 ?GHz|网口)"
+    },
+    {
+      "id": "skill_fast_path",
+      "text": "[with_skill only] trace 表明用了 chip-matrix.md 速查路径,未对该问题去打开 PDF (trace 不含 pdf_text.py 调用或仅用于二次确认)",
+      "verifier": "manual_or_grep_trace",
+      "pattern": "chip-matrix"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "skill_name": "rk",
+  "evals": [
+    {
+      "id": 1,
+      "name": "chip-matrix-lookup",
+      "prompt": "我手上的 TSPI 板子用的是 RK3566 这颗 SoC。我想跑 H.265 视频编码,能到多少分辨率和帧率? 跟 RK3568 有差别吗? 顺便说下解码端能力上限。",
+      "expected_output": "应快速给出 RK3566/3568 编码 1920x1088@60、解码 4096x2304@60 等数据,指出两颗 die 编解码能力一致,差异在 CPU 频率/网口/PCIe/SATA。不应当为简单规格查询去打开 PDF。",
+      "files": [],
+      "assertions": [
+        {"id": "h265_encode_spec", "text": "答案给出 RK3566 H.265 编码上限 1920x1088@60", "pattern": "1920[xX×]1088|1080[pP].*60"},
+        {"id": "h265_decode_spec", "text": "答案给出 RK3566/3568 H.265 解码上限 4096x2304@60", "pattern": "4096[xX×]2304"},
+        {"id": "codec_parity", "text": "明确说明 RK3566 与 RK3568 编解码能力一致 (同 die)", "pattern": "(一致|相同|同 ?die|同一颗|没.{0,4}差别|编解码.{0,8}(一样|一致))"},
+        {"id": "real_diff_mentioned", "text": "提到 RK3566 vs RK3568 真正的差异维度 (CPU/网口/PCIe/SATA 至少一个)", "pattern": "(GMAC|双.?千兆|PCIe|SATA|CPU 频率|2.?0 ?GHz|网口)"},
+        {"id": "skill_fast_path", "text": "[with_skill] trace 表明用了 chip-matrix.md 速查路径", "pattern": "chip-matrix"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "gmac-rgmii-delayline",
+      "prompt": "RK3566 GMAC1 接千兆 RGMII PHY,ping 大包丢包,tx_delay/rx_delay 应该怎么调? 给我一个 DTS 配置示例,再讲下怎么用示波器或软件验证调对了。",
+      "expected_output": "应识别为 GMAC RGMII 调试问题,定位到 cn/Common/GMAC/Rockchip_Developer_Guide_Linux_GMAC_RGMII_Delayline_CN.pdf,用 pdf_text.py 抽取关键章节,给出 DTS 片段(tx_delay/rx_delay 取值范围与典型值)、扫描方法、验证步骤,并写一份 distilled 文件登记到 INDEX。回答末尾应引用 PDF 路径与页码。",
+      "files": [],
+      "assertions": [
+        {"id": "mentions_tx_delay", "text": "答案提到 tx_delay/tx-delay", "pattern": "tx[-_]delay"},
+        {"id": "mentions_rx_delay", "text": "答案提到 rx_delay/rx-delay", "pattern": "rx[-_]delay"},
+        {"id": "dts_snippet_with_rgmii", "text": "答案包含 DTS 片段且使用 phy-mode = \"rgmii\"", "pattern": "phy-mode\\s*=\\s*\"?rgmii"},
+        {"id": "verification_method", "text": "给出验证方法 (示波器/iperf/ethtool/扫描)", "pattern": "(示波器|iperf|ethtool|ping.{0,20}(丢包|压力|大包)|扫描|sweep)"},
+        {"id": "skill_cited_pdf", "text": "[with_skill] 引用 GMAC RGMII Delayline PDF", "pattern": "RGMII[_ ]?Delayline"},
+        {"id": "skill_wrote_distilled", "text": "[with_skill] 在 distilled/ 创建了 GMAC RGMII 相关蒸馏", "pattern_path_glob": "/home/pi/imx/.claude/skills/rk/references/distilled/*gmac*rgmii*.md"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "rk356x-usb-gadget-uac",
+      "prompt": "我想把 RK3568 当成 USB 音频设备(UAC2 麦克风 + 扬声器),通过 OTG 口接电脑。SDK 里有现成方案吗? 大致流程是什么? 涉及哪些 PDF?",
+      "expected_output": "应综合查 cn/Common/USB/ 下的 USB_Gadget_UAC 文档 + Linux/ApplicationNote 里的 USB Gadget Quick Start + RK356x USB 平台文档,给出 ConfigFS 配置流程、内核需开的 Kconfig、g_audio 模块加载或 ConfigFS 写法,以及如何用 host 端验证。多 PDF 综合,蒸馏文件命名应清晰反映 use case。",
+      "files": [],
+      "assertions": [
+        {"id": "mentions_uac2", "text": "答案明确提到 UAC2 协议名", "pattern": "UAC ?2"},
+        {"id": "mentions_configfs_or_gaudio", "text": "答案给出 ConfigFS 配置或 g_audio 实现", "pattern": "(ConfigFS|configfs|g_audio|f_uac2)"},
+        {"id": "mentions_kconfig", "text": "答案提及相关内核 Kconfig", "pattern": "(CONFIG_USB_(CONFIGFS_F_)?UAC2|CONFIG_USB_F_UAC2|CONFIG_USB_AUDIO)"},
+        {"id": "cites_usb_uac_pdf", "text": "答案/trace 引用 USB_Gadget_UAC PDF", "pattern": "USB_Gadget_UAC|Gadget.{0,5}UAC"},
+        {"id": "skill_wrote_distilled", "text": "[with_skill] 在 distilled/ 创建了 UAC 相关蒸馏", "pattern_path_glob": "/home/pi/imx/.claude/skills/rk/references/distilled/*uac*.md"}
+      ]
+    }
+  ]
+}

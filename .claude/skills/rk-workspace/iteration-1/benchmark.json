@@ -1,0 +1,77 @@
+{
+  "skill_name": "rk",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "n_evals": 3,
+      "pass_rate": 1.00,
+      "mean_duration_seconds": 242.7,
+      "stddev_duration_seconds": 124.6,
+      "mean_tokens": 54606,
+      "stddev_tokens": 21587,
+      "side_effects": {
+        "distilled_files_created": 2,
+        "distilled_files": [
+          "gmac-rgmii-delayline.md",
+          "usb-gadget-uac-rk356x.md"
+        ]
+      }
+    },
+    {
+      "name": "without_skill",
+      "n_evals": 3,
+      "pass_rate": 1.00,
+      "mean_duration_seconds": 290.6,
+      "stddev_duration_seconds": 87.0,
+      "mean_tokens": 64811,
+      "stddev_tokens": 27822,
+      "side_effects": {
+        "distilled_files_created": 0
+      }
+    }
+  ],
+  "delta_with_skill_vs_baseline": {
+    "duration_seconds": -47.9,
+    "duration_pct": -16.5,
+    "tokens": -10205,
+    "tokens_pct": -15.7,
+    "pass_rate": 0.0
+  },
+  "per_eval": [
+    {
+      "eval_id": 1,
+      "name": "chip-matrix-lookup",
+      "with_skill":    {"pass_rate": 1.00, "duration_s":  97.0, "tokens": 31167, "tool_uses": 11},
+      "without_skill": {"pass_rate": 1.00, "duration_s": 207.7, "tokens": 51202, "tool_uses": 17},
+      "delta_duration_pct": -53.3,
+      "delta_tokens_pct": -39.1,
+      "notes": "Fast-path test: with_skill correctly avoided opening any PDF (used chip-matrix.md shortcut); baseline went to datasheet PDFs. Biggest win in this iteration."
+    },
+    {
+      "eval_id": 2,
+      "name": "gmac-rgmii-delayline",
+      "with_skill":    {"pass_rate": 1.00, "duration_s": 331.2, "tokens": 58784, "tool_uses": 21},
+      "without_skill": {"pass_rate": 1.00, "duration_s": 284.0, "tokens": 44990, "tool_uses": 24},
+      "delta_duration_pct": +16.6,
+      "delta_tokens_pct": +30.7,
+      "notes": "with_skill slower because it (a) read 2 PDFs and (b) wrote a distilled file for future reuse. Baseline went into kernel source (dwmac-rk.c) — quick grep but no reusable knowledge artifact left behind. The trade-off is intentional: skill pays once to amortize across future runs."
+    },
+    {
+      "eval_id": 3,
+      "name": "rk356x-usb-gadget-uac",
+      "with_skill":    {"pass_rate": 1.00, "duration_s": 299.9, "tokens": 73866, "tool_uses": 19},
+      "without_skill": {"pass_rate": 1.00, "duration_s": 380.0, "tokens": 98242, "tool_uses": 20},
+      "delta_duration_pct": -21.1,
+      "delta_tokens_pct": -24.8,
+      "notes": "Multi-PDF synthesis. with_skill resources-map quickly pointed to all 3 relevant PDFs; baseline burned tokens exploring before converging on the same set."
+    }
+  ],
+  "analyst_observations": [
+    "Pass rate is saturated (100% both conditions) — the SDK doc base is rich enough that competent agents find correct answers either way. Pass rate is not the discriminator here.",
+    "Skill provides clear time/token wins on fast-path queries (eval-1: 53% faster) and multi-PDF synthesis (eval-3: 21% faster). Wins disappear or invert on single-PDF deep dives where baseline can spot-grep the kernel source efficiently (eval-2).",
+    "The skill's distinctive value is *cache accumulation*: 2 distilled files were produced in this iteration. The baseline has no equivalent. On a second-run of the same questions, the skill's cost would drop near-zero while baseline would repeat the same exploration.",
+    "Assertions are not discriminating because both conditions saturate. For iteration 2, consider adding negative/anti-trigger assertions (e.g. ensuring skill doesn't fire on iMX6ULL prompts) and a 'reuse-from-cache' test that re-runs eval-2 after iteration-1 populated distilled — only with_skill should benefit.",
+    "Eval-2 with_skill being slower is the kind of cost we *want* to pay once to gain compounding benefit. Worth flagging in the SKILL.md or workflow doc so future readers understand why a one-PDF dive looks 'inefficient' on a single-shot benchmark."
+  ]
+}

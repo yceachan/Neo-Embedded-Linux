@@ -11,7 +11,8 @@ CC      := $(TC)gcc
 CFLAGS  := --sysroot=$(SYSROOT) -O2 -Wall -Wno-unused-parameter -Isrc -I$(SYSROOT)/usr/include/cairo
 LDFLAGS := --sysroot=$(SYSROOT) -lwayland-client -lcairo -lrt -lm
 
-TARGET  := tspi-greet
+BIN_DIR := output/bin
+TARGET  := $(BIN_DIR)/tspi-greet
 SRCS    := src/main.c src/xdg-shell-protocol.c
 GEN_H   := src/xdg-shell-client.h
 GEN_C   := src/xdg-shell-protocol.c

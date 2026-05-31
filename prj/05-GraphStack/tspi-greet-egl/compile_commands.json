@@ -1,0 +1,59 @@
+[
+  {
+    "arguments": [
+      "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc",
+      "-c",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wno-unused-parameter",
+      "-Isrc",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-o",
+      "output/bin/tspi-greet-egl",
+      "src/main.c"
+    ],
+    "directory": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl",
+    "file": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl/src/main.c",
+    "output": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl/output/bin/tspi-greet-egl"
+  },
+  {
+    "arguments": [
+      "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc",
+      "-c",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wno-unused-parameter",
+      "-Isrc",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-o",
+      "output/bin/tspi-greet-egl",
+      "src/render.c"
+    ],
+    "directory": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl",
+    "file": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl/src/render.c",
+    "output": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl/output/bin/tspi-greet-egl"
+  },
+  {
+    "arguments": [
+      "/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/bin/aarch64-buildroot-linux-gnu-gcc",
+      "-c",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wno-unused-parameter",
+      "-Isrc",
+      "--sysroot=/home/pi/imx/sdk/tspi-rk3566-sdk/buildroot/output/rockchip_rk3566_taishanpi_1m_v10/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot",
+      "-o",
+      "output/bin/tspi-greet-egl",
+      "src/xdg-shell-protocol.c"
+    ],
+    "directory": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl",
+    "file": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl/src/xdg-shell-protocol.c",
+    "output": "/home/pi/imx/prj/05-GraphStack/tspi-greet-egl/output/bin/tspi-greet-egl"
+  }
+]

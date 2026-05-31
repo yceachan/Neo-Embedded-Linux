@@ -1,6 +1,6 @@
 # Neo-Embedded-Linux
 
-> **A modern, AI-assisted playbook for mastering Linux Kernel Driver development.**
+> **A modern, AI-assisted playbook for mastering Linux Driver,System,APP development.**
 >
 > Hardware Platform : NXP i.MX6ULL. ; RK 3566;
 
@@ -9,7 +9,7 @@
 ![Kernel](https://img.shields.io/badge/kernel-Linux%204.9.88;Linux6.1-orange.svg)
 ![Status](https://img.shields.io/badge/status-Active-brightgreen.svg)
 
-**Neo-Embedded-Linux** is a next-generation repository dedicated to embedded Linux learning and driver development. Unlike traditional tutorials, this project leverages **AI Agents (Gemini CLI)** to govern knowledge bases, standardize code quality, and accelerate the learning curve from "Hello World" to complex subsystem drivers.
+**Neo-Embedded-Linux** is a next-generation repository dedicated to embedded Linux learning and driver development. Unlike traditional tutorials, this project leverages **AI Agents ** to govern knowledge bases, standardize code quality, and accelerate the learning curve from "Hello World" to complex subsystem drivers.
 
 ## 🚀 Key Features
 
@@ -25,18 +25,18 @@
 
 | Directory | Description |
 | :--- | :--- |
-| `note/` | **The Core Brain.** Deep technical notes, architectural diagrams (Mermaid), and best practices. <br> *Highlights: `note/KernelLearning最佳实践.md`, `note/DTS/`, `note/Kbuild/`* |
-| `prj/` | **The Code Forge.** Source code for kernel drivers and applications. <br> *Includes: `01_hello_drv`, `gpio_drv`, and standardized Makefiles.* |
-| `sdk/` | **The Foundation.** NXP/100ASK BSP, Linux 4.9 Kernel source, and Toolchains. |
-| `docs/` | **The Reference.** Official datasheets (IMX6ULL RM), board schematics, and vendor manuals. |
+| `note/` | KnowLedges |
+| `prj/` | Code Workspace |
+| `sdk/` | Vendor SDK |
+| `docs/` | **The PDF Reference.** |
 
-## 🛠️ Getting Started
+## 🛠️ Getting Started 
 
 ### Prerequisites
 
-- **Hardware**: NXP i.MX6ULL EVB( 100ASK_IMX6ULL_PRO); TSPI RK3566.
+- **Hardware**: NXP i.MX6ULL(100ASK_IMX6ULL_PRO); TSPI-1M RK3566.
 - **SDK:**
-  - [100ask-support BSP](./sdk/README.md);[BSP同步与py-3.10适配](sdk/issue/01-100ask-BSP同步与py-3.10适配.md)
+  - [100ask-support BSP](./sdk/Setup-imx.md])
   - [TSPI RK3566 SDK](./sdk/Setup-tspi.md)
 - **Host**: Linux (Ubuntu 22.04+) on Windows (WSL2).
 - **Toolchain**: `arm-linux-gnueabihf-` (provided in i.MX6 SDK) / `aarch64-none-linux-gnu-` (provided in TSPI SDK).

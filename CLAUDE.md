@@ -4,41 +4,70 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-**Neo-Embedded-Linux** — AI-assisted kernel driver learning and development for the NXP i.MX6ULL (Cortex-A7) embedded platform. This repo combines a structured knowledge base (`note/`) with working driver projects (`prj/`), governed by strict Agent CLI conventions.
+**Neo-Embedded-Linux** — AI-assisted kernel-driver / system / app learning across **two** embedded platforms:
+
+| Platform | SoC | Kernel | Toolchain |
+|---|---|---|---|
+| 100ask IMX6ULL EVB | NXP i.MX6ULL (Cortex-A7) | Linux 4.9.88 | `arm-buildroot-linux-gnueabihf-` |
+| TSPI RK3566 | Rockchip RK3566 (Cortex-A55) | Linux 6.1 | `aarch64-none-linux-gnu-` |
+
+The repo pairs a structured knowledge base (`note/`) with out-of-tree driver/app projects (`prj/`). Notes are the authoritative output; code under `prj/` exists to be observed and written up.
 
 ## Resource Map
 
 | Directory | Role |
-|-----------|------|
-| `docs/` | NXP datasheets, reference manuals, and the 100ask development handbook |
-| `note/` | Agent-governed learning notes (Kbuild, DTS, SoC arch, VFS, SysCall, virtualization) |
-| `prj/` | Out-of-tree kernel driver projects |
-| `sdk/` | 100ask IMX6ULL BSP (Linux-4.9.88, U-Boot, Buildroot, toolchain) |
+|---|---|
+| `docs/` | NXP datasheets, reference manuals, 100ask handbook (read-only references) |
+| `note/` | Governed learning notes — see knowledge map below |
+| `prj/` | Out-of-tree kernel modules + user-space apps, per platform |
+| `sdk/100ask_imx6ull-sdk/` | IMX6ULL BSP (kernel, U-Boot, Buildroot, toolchain) |
+| `sdk/tspi-rk3566-sdk/` | TSPI BSP — **contains nested git repos** (see caveat) |
 
 ## Environment
 
-| Task | Command / Path |
-|------|----------------|
-| **Activate SDK** | `source ~/imx/imx-env.sh` |
-| **Link EVB** | `ssh imx` |
-| **NFS Mount** | Local `prj/mount/` is mounted at EVB `/mnt/` |
+Source the matching env script *before* building. They both export `KERN_DIR`, `ARCH`, `CROSS_COMPILE`, and extend `PATH`; `dump_armgcc` prints the active values.
 
-## Note Naming Convention (workspace rule)
+| Task | IMX6ULL | TSPI RK3566 |
+|---|---|---|
+| Activate SDK | `source ~/imx/imx-env.sh` | `source ~/imx/tspi_env.sh` |
+| SSH to board | `ssh imx` | `ssh tspi` (via RNDIS — fails if RNDIS down; fall back to serial) |
+| NFS share | local `prj/nfs_imx/` ↔ board `/mnt/` | local `prj/nfs_tspi/` ↔ board `/mnt/nfs` |
 
-- Notes under `note/**` MUST use `NN-topic.md` format (two-digit serial + short English topic).
-- Chinese title goes in YAML frontmatter `title:`, **not** in the filename.
-- Observation/trace/transcript notes use prefix `trail-` and are NOT part of the serial sequence.
-- See `note/SysCall/IO/plan/refact-20260409.md` for the canonical example of this layout.
+`tspi_env.sh` also defines `syncImage` (rsyncs `$SDK_DIR/rockdev/` to a Windows host path for flashing); `$SDK_DIR` only exists in the TSPI env.
+
+## TSPI SDK Caveat — Nested Git Repos
+
+`sdk/tspi-rk3566-sdk/{kernel-6.1,u-boot,buildroot}` are **independent git repositories** nested inside this repo (not submodules). When assessing branch state, recent changes, or running `git` commands, you must `cd` into each nested repo separately — the outer `git status` will not see their commits. This is a common source of "progress looks empty but isn't" mistakes.
+
+## Note Conventions
+
+- Files under `note/**` ,using `NN-topic.md`. 
+- Addting notes like trail, using Appropriate Prefix.`prefix-topic.md`
+- Global Writing Documents Rules.
 
 ## Note Knowledge Map
 
-Learning progression in `note/`:
+Top-level subdirs of `note/` (learning roughly progresses top-to-bottom):
 
-- `KernelLearning最佳实践.md` — entry point; methodology and phase plan
-- `Kbuild/` — build system governance (8 files, phases 1–4)
-- `DTS/` — Device Tree: usage model, syntax, bindings, DTS→driver mapping
-- `SoC-Arch/` — IMX6ULL hardware architecture (Cortex-A7, GICv2, memory interfaces)
-- `SysCall/` — System call deep-dive, syscall table, process address space, MMU
-- `VFS/` — Virtual File System; out-of-tree character device source analysis
-- `虚拟化/` — Process virtualization, IPC (pipe, signal), program execution
-- `Legacy/` — Archived introductory notes (superseded)
+- `SoC-Arch/` — i.MX6ULL hardware: Cortex-A7, GICv2, memory interfaces
+- `Kbuild/` — kernel build system: flags, Kconfig, external modules, kbuild architecture
+- `DTS/` — Device Tree: `Usage/`, `mechanism/`, `Bindings/`, `Overlays/`, `evb/`
+- `虚拟化/` — process virtualization: address space, MMU, vDSO, ABI, fork/exec/wait, IPC
+- `SysCall/` — syscall panorama, table, libc wrapping, IO (`read/write`, `ioctl`, `poll`, advanced fops)
+- `FS/` — VFS & device model (`kobject`, cdev, out-of-tree virtual char devices) + `RTFS与boot/` (initramfs, fstab, boot chain)
+- `kernel/` — kernel core: `context/`, `defer/` (softirq/tasklet/wq), `time/`, `sync/`, `sched/`
+- `Subsystem/` — `Interrupt/` (GIC → framework → driver API), `gpio/`
+- `BSP-Dev/` — board bring-up (e.g. `LCD-Touch/MIPI-DSI`)
+- `devp/` — dev-tooling: `kdebug`, `klog-session`, etc.
+- `sdk/` — SDK workflow: out-of-tree module flow, Bear / `compile_commands.json`, NFS rootfs
+
+## Project Workspace (`prj/`)
+
+| Path | Purpose |
+|---|---|
+| `xx-<topic>/` | Driver/app demos, numbered to match the note progression |
+| `dts_imx/` / `dts_tspi/` | Per-platform DTS overlays / experiments |
+| `nfs_imx/` / `nfs_tspi/` | Per-platform NFS share roots (see Environment table) |
+| `prj.code-workspace` / `tspi.code-workspace` | VS Code multi-root workspaces |
+
+- `~/.ssh/config` to see evb host.

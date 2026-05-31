@@ -1,0 +1,43 @@
+{
+  "eval_id": 2,
+  "eval_name": "gmac-rgmii-delayline",
+  "prompt": "RK3566 GMAC1 接千兆 RGMII PHY,ping 大包丢包,tx_delay/rx_delay 应该怎么调? 给我一个 DTS 配置示例,再讲下怎么用示波器或软件验证调对了。",
+  "assertions": [
+    {
+      "id": "mentions_tx_rx_delay",
+      "text": "答案明确给出 tx_delay 与 rx_delay 两个配置项",
+      "verifier": "regex_in_answer",
+      "pattern": "tx[-_]delay"
+    },
+    {
+      "id": "mentions_rx_delay",
+      "text": "答案明确提到 rx_delay",
+      "verifier": "regex_in_answer",
+      "pattern": "rx[-_]delay"
+    },
+    {
+      "id": "dts_snippet_with_rgmii",
+      "text": "答案包含 DTS 片段且使用 phy-mode = \"rgmii\"",
+      "verifier": "regex_in_answer",
+      "pattern": "phy-mode\\s*=\\s*\"?rgmii"
+    },
+    {
+      "id": "verification_method",
+      "text": "答案给出验证方法 (示波器、ping/iperf、ethtool、扫描脚本至少一种)",
+      "verifier": "regex_in_answer",
+      "pattern": "(示波器|iperf|ethtool|ping.{0,20}(丢包|压力|大包)|扫描|sweep)"
+    },
+    {
+      "id": "skill_cited_pdf",
+      "text": "[with_skill only] 答案或 trace 引用 GMAC RGMII Delayline PDF 路径或页码",
+      "verifier": "regex_in_trace_or_answer",
+      "pattern": "RGMII[_ ]?Delayline"
+    },
+    {
+      "id": "skill_wrote_distilled",
+      "text": "[with_skill only] 在 references/distilled/ 下创建了与 GMAC RGMII 相关的蒸馏文件",
+      "verifier": "file_exists_glob",
+      "pattern": "/home/pi/imx/.claude/skills/rk/references/distilled/*gmac*rgmii*.md"
+    }
+  ]
+}

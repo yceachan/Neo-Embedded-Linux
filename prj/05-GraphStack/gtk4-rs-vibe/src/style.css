@@ -1,0 +1,62 @@
+/* ── Button-Greet 演示: CSS 样式 ────────────────────────
+ * 四个 CSS class 展示 GTK4 样式系统的核心概念：
+ *   颜色/字体/圆角/内边距、:hover 伪类、transition 动画 */
+
+.greet-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+}
+
+.greet-entry {
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #2a2a2a;
+    color: #f0f0f0;
+    border: 1px solid #444;
+}
+.greet-entry:focus {
+    border-color: #3584e4;
+}
+
+.greet-button {
+    font-size: 16px;
+    font-weight: bold;
+    background: #3584e4;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 28px;
+    border: none;
+    transition: background 200ms, transform 100ms;
+}
+.greet-button:hover {
+    background: #1c71d8;
+}
+.greet-button:active {
+    background: #15539e;
+}
+
+.greet-result {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2ec27e;
+    margin-top: 8px;
+}
+
+.greet-log-header {
+    font-size: 14px;
+    font-weight: bold;
+    color: #999;
+    margin-top: 12px;
+}
+
+.greet-log {
+    font-size: 13px;
+    font-family: monospace;
+    color: #aaa;
+    background: #1a1a1a;
+    border-radius: 6px;
+    padding: 10px 14px;
+}

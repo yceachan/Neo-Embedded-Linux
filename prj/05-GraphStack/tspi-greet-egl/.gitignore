@@ -1,0 +1,13 @@
+# 只保留目录结构，不入库二进制/日志/wayland-scanner 产物
+output/*
+!output/.gitkeep
+!output/bin/
+output/bin/*
+!output/bin/.gitkeep
+!output/log/
+output/log/*
+!output/log/.gitkeep
+
+# wayland-scanner 在 make 时再生
+src/xdg-shell-client.h
+src/xdg-shell-protocol.c

@@ -46,6 +46,13 @@ static void wm_ping(void *d, struct xdg_wm_base *b, uint32_t serial)
 static const struct xdg_wm_base_listener wm_listener = { .ping = wm_ping };
 
 /* ---- registry -------------------------------------------------------- */
+/*============================================================**
+*@READNME:
+- 当客户端调用 wl_display_get_registry() 并添加此监听器后，
+  合成器会为每一个它能提供的全局服务（如 wl_compositor、wl_shm、xdg_wm_base 等）
+  触发一次 global 事件。
+  global回调中，client的流程代码就需要把这些全局对象资源的指针binding到自己的数据结构里。
+*=============================================================*/
 static void reg_global(void *data, struct wl_registry *reg, uint32_t name,
                        const char *iface, uint32_t version)
 {
