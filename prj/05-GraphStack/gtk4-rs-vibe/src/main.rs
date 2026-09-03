@@ -28,7 +28,6 @@ fn main() {
     app.connect_activate(|app| {
         build_ui(app);
     });
-    app.build
     app.run();
 }
 
